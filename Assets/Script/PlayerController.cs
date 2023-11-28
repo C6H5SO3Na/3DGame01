@@ -1,14 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.PlasticSCM.Editor.WebApi;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
-{Å@
+{
     Rigidbody rg;
+    GameObject shotPrefab;
+    bool isJumping;
     // Start is called before the first frame update
     void Start()
     {
         rg = GetComponent<Rigidbody>();
+        shotPrefab = GameObject.Find("ShotPrefab");
+        isJumping = false;
     }
 
     // Update is called once per frame
@@ -16,23 +21,35 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.W))
         {
-            this.rg.AddForce(transform.forward * 2.0f);
+            transform.Translate(transform.forward * 3 * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            this.rg.AddForce(transform.right * -2.0f);
+            transform.Translate(-transform.right * 3 * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            this.rg.AddForce(transform.forward * -2.0f);
+            transform.Translate(-transform.forward * 3 * Time.deltaTime);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            this.rg.AddForce(transform.right * 2.0f);
+            transform.Translate(transform.right * 3 * Time.deltaTime);
         }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            this.rg.AddForce(transform.up * 200.0f);
+            this.rg.AddForce(transform.up * 3 * 100.0f);
+            isJumping = true;
+        }
+        if (Input.GetMouseButtonDown(0))
+        {
+            Instantiate(shotPrefab);
+        }
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Plane")
+        {
+            isJumping = false;
         }
     }
 }
