@@ -6,13 +6,12 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     Rigidbody rg;
-    GameObject shotPrefab;
+    public GameObject shotPrefab;
     bool isJumping;
     // Start is called before the first frame update
     void Start()
     {
         rg = GetComponent<Rigidbody>();
-        shotPrefab = GameObject.Find("ShotPrefab");
         isJumping = false;
     }
 
@@ -43,6 +42,7 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Instantiate(shotPrefab);
+            shotPrefab.transform.Translate(this.transform.position - shotPrefab.transform.position);
         }
     }
     void OnCollisionEnter(Collision collision)
