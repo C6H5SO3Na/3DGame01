@@ -18,6 +18,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //ÉvÉåÉCÉÑÇÃëÄçÏ
         if (Input.GetKey(KeyCode.W))
         {
             transform.Translate(transform.forward * 3 * Time.deltaTime);
@@ -42,7 +43,6 @@ public class PlayerController : MonoBehaviour
         if (Input.GetMouseButtonDown(0))
         {
             Instantiate(shotPrefab);
-            shotPrefab.transform.Translate(this.transform.position - shotPrefab.transform.position);
         }
     }
     void OnCollisionEnter(Collision collision)
