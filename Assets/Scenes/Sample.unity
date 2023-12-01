@@ -540,6 +540,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 121223572559a6b43b76ed6f527edb1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  shotPrefab: {fileID: 2404615843220717850, guid: ea93db22888119a49869b6e240d2c505, type: 3}
 --- !u!136 &1161100595
 CapsuleCollider:
   m_ObjectHideFlags: 0
