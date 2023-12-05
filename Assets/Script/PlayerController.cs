@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using Unity.PlasticSCM.Editor.WebApi;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,28 +23,32 @@ public class PlayerController : MonoBehaviour
         //ÉvÉåÉCÉÑÇÃëÄçÏ
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(transform.forward * 3 * Time.deltaTime);
+            transform.Translate(3 * Time.deltaTime * transform.forward);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(-transform.right * 3 * Time.deltaTime);
+            transform.Translate(3 * Time.deltaTime * -transform.right);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(-transform.forward * 3 * Time.deltaTime);
+            transform.Translate(3 * Time.deltaTime * -transform.forward);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(transform.right * 3 * Time.deltaTime);
+            transform.Translate(30 * Time.deltaTime * transform.right);
         }
         if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            this.rg.AddForce(transform.up * 3 * 100.0f);
+            this.rg.AddForce(100.0f * 3 * transform.up);
             isJumping = true;
         }
+
+        //Ray position = Camera.main.ScreenPointToRay();
+        //Debug.DrawRay(position.origin, position.direction, Color.red, 10, true);
+
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(shotPrefab);
+            Instantiate(shotPrefab, transform.TransformPoint(Input.mousePosition), new Quaternion());
         }
     }
     void OnCollisionEnter(Collision collision)

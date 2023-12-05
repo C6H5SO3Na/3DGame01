@@ -6,18 +6,24 @@ public class ShotController : MonoBehaviour
 {
     GameObject player;
     Rigidbody rb;
+    int mainCnt = 0;
     // Start is called before the first frame update
     void Start()
     {
+        Application.targetFrameRate = 60;
         player = GameObject.Find("Player");
-        Vector3 playerPos = player.transform.position;
-        transform.position = playerPos + new Vector3(0.0f, 0.0f, 10.0f);
         this.rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        rb.AddForce(transform.forward * 2.0f);
+        rb.AddForce(transform.forward * 10.0f);
+        float fps = 1.0f / Time.deltaTime;
+        if (mainCnt >= 10.0f * fps)
+        {
+            Destroy(gameObject);
+        }
+        ++mainCnt;
     }
 }
