@@ -10,11 +10,13 @@ public class PlayerController : MonoBehaviour
     Rigidbody rg;
     public GameObject shotPrefab;
     bool isJumping;
+    float speed;
     // Start is called before the first frame update
     void Start()
     {
         rg = GetComponent<Rigidbody>();
         isJumping = false;
+        speed = 3.0f;
     }
 
     // Update is called once per frame
@@ -23,32 +25,36 @@ public class PlayerController : MonoBehaviour
         //ÉvÉåÉCÉÑÇÃëÄçÏ
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(3 * Time.deltaTime * transform.forward);
+            transform.Translate(speed * Time.deltaTime * transform.forward);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(3 * Time.deltaTime * -transform.right);
+            transform.Translate(speed * Time.deltaTime * -transform.right);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(3 * Time.deltaTime * -transform.forward);
+            transform.Translate(speed * Time.deltaTime * -transform.forward);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(30 * Time.deltaTime * transform.right);
+            transform.Translate(speed * Time.deltaTime * transform.right);
         }
         if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            this.rg.AddForce(100.0f * 3 * transform.up);
+            this.rg.AddForce(300.0f * transform.up);
             isJumping = true;
         }
 
-        //Ray position = Camera.main.ScreenPointToRay();
-        //Debug.DrawRay(position.origin, position.direction, Color.red, 10, true);
-
         if (Input.GetMouseButtonDown(0))
         {
-            Instantiate(shotPrefab, transform.TransformPoint(Input.mousePosition), new Quaternion());
+            GameObject shot = Instantiate(shotPrefab);
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            Vector3 worldDirection = ray.direction;
+            shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
+
+            //à⁄ìÆÇµÇΩà íuÇ©ÇÁíeî≠éÀ
+            shot.transform.position = Camera.main.transform.position
+                + Camera.main.transform.forward * 5.5f;
         }
     }
     void OnCollisionEnter(Collision collision)
