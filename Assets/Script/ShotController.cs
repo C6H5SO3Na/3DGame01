@@ -18,12 +18,17 @@ public class ShotController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        rb.AddForce(transform.forward * 10.0f);
         float fps = 1.0f / Time.deltaTime;
         if (mainCnt >= 10.0f * fps)
         {
             Destroy(gameObject);
         }
         ++mainCnt;
+    }
+
+    //’e‚ð”­ŽË
+    public void Shoot(Vector3 direction)
+    {
+        GetComponent<Rigidbody>().AddForce(direction);
     }
 }
