@@ -7,16 +7,19 @@ using UnityEngine.UIElements;
 
 public class PlayerController : MonoBehaviour
 {
-    Rigidbody rg;
+    CharacterController charaCon;
     public GameObject shotPrefab;
     bool isJumping;
     float speed;
+    float fall;
+    Vector3 velocity;
     // Start is called before the first frame update
     void Start()
     {
-        rg = GetComponent<Rigidbody>();
+        charaCon = GetComponent<CharacterController>();
         isJumping = false;
         speed = 3.0f;
+        fall = 0.0f;
     }
 
     // Update is called once per frame
@@ -25,26 +28,33 @@ public class PlayerController : MonoBehaviour
         //プレイヤの操作
         if (Input.GetKey(KeyCode.W))
         {
-            transform.Translate(speed * Time.deltaTime * transform.forward);
+            velocity = speed * Time.deltaTime * transform.forward;
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.Translate(speed * Time.deltaTime * -transform.right);
+            velocity = speed * Time.deltaTime * -transform.right;
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.Translate(speed * Time.deltaTime * -transform.forward);
+            velocity = speed * Time.deltaTime * -transform.forward;
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.Translate(speed * Time.deltaTime * transform.right);
-        }
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
-        {
-            this.rg.AddForce(300.0f * transform.up);
-            isJumping = true;
+            velocity = speed * Time.deltaTime * transform.right;
         }
 
+        //ジャンプ
+        if (Input.GetKeyDown(KeyCode.Space))// && !isJumping)
+        {
+            fall = 10;
+            isJumping = true;
+        }
+        fall += Physics.gravity.y * Time.deltaTime * 0.01f;
+        velocity.y = fall;
+
+        charaCon.Move(velocity);
+        velocity = Vector3.zero;
+        //弾発射
         if (Input.GetMouseButtonDown(0))
         {
             GameObject shot = Instantiate(shotPrefab);
@@ -59,7 +69,7 @@ public class PlayerController : MonoBehaviour
     }
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Plane")
+        if (collision.gameObject.CompareTag("Plane"))
         {
             isJumping = false;
         }
