@@ -46,10 +46,10 @@ public class PlayerController : MonoBehaviour
         //ƒWƒƒƒ“ƒv
         if (Input.GetKeyDown(KeyCode.Space))// && !isJumping)
         {
-            fall = 10;
+            fall = 1;
             isJumping = true;
         }
-        fall += Physics.gravity.y * Time.deltaTime * 0.01f;
+        fall += Physics.gravity.y * Time.deltaTime * 0.0001f;
         velocity.y = fall;
 
         charaCon.Move(velocity);
