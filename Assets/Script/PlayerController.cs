@@ -11,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public GameObject shotPrefab;
     bool isJumping;
     float speed;
-    float fall;
+    float fallSpeed;
     Vector3 velocity;
     // Start is called before the first frame update
     void Start()
@@ -19,38 +19,24 @@ public class PlayerController : MonoBehaviour
         charaCon = GetComponent<CharacterController>();
         isJumping = false;
         speed = 3.0f;
-        fall = 0.0f;
+        fallSpeed = 0.0f;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //プレイヤの操作
-        if (Input.GetKey(KeyCode.W))
-        {
-            velocity = speed * Time.deltaTime * transform.forward;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            velocity = speed * Time.deltaTime * -transform.right;
-        }
-        if (Input.GetKey(KeyCode.S))
-        {
-            velocity = speed * Time.deltaTime * -transform.forward;
-        }
-        if (Input.GetKey(KeyCode.D))
-        {
-            velocity = speed * Time.deltaTime * transform.right;
-        }
+        //プレイヤの上下左右移動
+        velocity.x = speed * Time.deltaTime * Input.GetAxis("Horizontal");
+        velocity.z = speed * Time.deltaTime * Input.GetAxis("Vertical");
 
         //ジャンプ
-        if (Input.GetKeyDown(KeyCode.Space))// && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
-            fall = 10;
             isJumping = true;
+            fallSpeed = 10.0f * Time.deltaTime;
         }
-        fall += Physics.gravity.y * Time.deltaTime * 0.01f;
-        velocity.y = fall;
+        fallSpeed += -0.3f * Time.deltaTime;
+        velocity.y += fallSpeed;
 
         charaCon.Move(velocity);
         velocity = Vector3.zero;
@@ -67,9 +53,10 @@ public class PlayerController : MonoBehaviour
                 + Camera.main.transform.forward * 5.5f;
         }
     }
-    void OnCollisionEnter(Collision collision)
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    //(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Plane"))
+        if (hit.gameObject.CompareTag("Plane"))
         {
             isJumping = false;
         }
