@@ -13,7 +13,7 @@ public class CameraContoroller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Camera.main.transform.rotation = Quaternion.Euler(1, cnt, 1);
+        //Camera.main.transform.rotation = Quaternion.Euler(1, cnt, 1);
         cnt++;
     }
 }

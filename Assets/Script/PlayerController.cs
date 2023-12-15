@@ -30,7 +30,7 @@ public class PlayerController : MonoBehaviour
         velocity.z = speed * Time.deltaTime * Input.GetAxis("Vertical");
 
         //ƒWƒƒƒ“ƒv
-        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
+        if (Input.GetButtonDown("Jump") && !isJumping)
         {
             isJumping = true;
             fallSpeed = 10.0f * Time.deltaTime;
@@ -56,9 +56,6 @@ public class PlayerController : MonoBehaviour
     void OnControllerColliderHit(ControllerColliderHit hit)
     //(Collision collision)
     {
-        if (hit.gameObject.CompareTag("Plane"))
-        {
-            isJumping = false;
-        }
+        isJumping = false;
     }
 }
