@@ -2,33 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class ObjectController : MonoBehaviour
-{   
-    public int life;
-    bool isPlayingParticle;
+{
+    [SerializeField] int life;
+    bool isPlayingEffect = false;
     //Rigidbody rb;
+    GameObject explosion;
     ParticleSystem ps;
     //[SerializeField] Renderer rd;
     // Start is called before the first frame update
     void Start()
     {
         //rb = GetComponent<Rigidbody>();
-        ps = GetComponent<ParticleSystem>();
+        explosion = GameObject.Find("Explosion");
+        ps = explosion.GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (life <= 0 && !isPlayingParticle)
+        if (life <= 0 && !this.ps.isPlaying)
         {
-            this.ps.Play();
-            //rd.enabled = true;
-            isPlayingParticle = true;
-        }
-        if (isPlayingParticle && !this.ps.isPlaying)
-        {
-            Destroy(gameObject);
+            ps.Play();
         }
     }
 
