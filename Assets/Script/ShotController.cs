@@ -10,7 +10,6 @@ public class ShotController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 60;
         player = GameObject.Find("Player");
         this.rb = GetComponent<Rigidbody>();
     }
@@ -30,5 +29,15 @@ public class ShotController : MonoBehaviour
     public void Shoot(Vector3 direction)
     {
         GetComponent<Rigidbody>().AddForce(direction);
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("NormalObject") ||
+            collision.gameObject.CompareTag("HardObject"))
+        {
+            Destroy(this.gameObject);
+        }
+
     }
 }
