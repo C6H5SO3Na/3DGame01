@@ -7,25 +7,26 @@ using UnityEngine.Rendering;
 public class ObjectController : MonoBehaviour
 {
     [SerializeField] int life;
-    bool isPlayingEffect = false;
     //Rigidbody rb;
-    GameObject explosion;
     ParticleSystem ps;
-    //[SerializeField] Renderer rd;
+
     // Start is called before the first frame update
     void Start()
     {
         //rb = GetComponent<Rigidbody>();
-        explosion = GameObject.Find("Explosion");
-        ps = explosion.GetComponent<ParticleSystem>();
+        ps = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (life <= 0 && !this.ps.isPlaying)
+        if (life <= 0)
         {
-            ps.Play();
+            if (!ps.isPlaying)
+            {
+                ps.transform.position = this.transform.position;
+                ps.Play();
+            }
         }
     }
 
@@ -36,5 +37,10 @@ public class ObjectController : MonoBehaviour
         {
             --life;
         }
+    }
+
+    void OnParticleSystemStopped()
+    {
+        Destroy(gameObject);
     }
 }
