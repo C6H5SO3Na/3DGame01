@@ -1,19 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class CameraContoroller : MonoBehaviour
 {
-    int cnt = 0;
+    GameObject player;
+    Vector3 direction;
     // Start is called before the first frame update
     void Start()
     {
+        player = GameObject.Find("Player");
+        direction = this.transform.position - player.transform.position;
     }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
-        //Camera.main.transform.rotation = Quaternion.Euler(1, cnt, 1);
-        cnt++;
+        transform.position = player.transform.position + direction;
     }
 }

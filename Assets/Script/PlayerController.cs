@@ -8,10 +8,11 @@ using UnityEngine.UIElements;
 public class PlayerController : MonoBehaviour
 {
     CharacterController charaCon;
-    public GameObject shotPrefab;
+    [SerializeField] GameObject shotPrefab;
     bool isJumping;
     float speed;
     float fallSpeed;
+    Vector2 angle;
     Vector3 velocity;
     // Start is called before the first frame update
     void Start()
@@ -26,9 +27,21 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         //プレイヤの上下左右移動
-        velocity.x = speed * Time.deltaTime * Input.GetAxis("Horizontal");
-        velocity.z = speed * Time.deltaTime * Input.GetAxis("Vertical");
+        velocity.x = speed * Time.deltaTime * Input.GetAxis("Horizontal_L");
+        velocity.z = speed * Time.deltaTime * Input.GetAxis("Vertical_L");
 
+        //プレイヤの視点変更
+        if (Input.GetAxis("Vertical_R") != 0.0f)
+        {
+            angle.y -= Input.GetAxis("Vertical_R");
+            angle.y = Mathf.Max(Mathf.Min(angle.y, 90.0f), -90.0f);
+        }
+        if (Input.GetAxis("Horizontal_R") != 0.0f)
+        {
+            angle.x += Input.GetAxis("Horizontal_R");
+        }
+
+        Camera.main.transform.localRotation = Quaternion.Euler(angle.y, angle.x, 0);
         //ジャンプ
         if (Input.GetButtonDown("Jump") && !isJumping)
         {
