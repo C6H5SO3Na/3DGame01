@@ -33,15 +33,18 @@ public class PlayerController : MonoBehaviour
         //プレイヤの視点変更
         if (Input.GetAxis("Vertical_R") != 0.0f)
         {
-            angle.y -= Input.GetAxis("Vertical_R");
-            angle.y = Mathf.Max(Mathf.Min(angle.y, 90.0f), -90.0f);
+            //angle.y -= Input.GetAxis("Vertical_R");
+            angle.y = Input.GetAxis("Vertical_R");
         }
         if (Input.GetAxis("Horizontal_R") != 0.0f)
         {
-            angle.x += Input.GetAxis("Horizontal_R");
+            angle.x = Input.GetAxis("Horizontal_R");
         }
 
-        Camera.main.transform.localRotation = Quaternion.Euler(angle.y, angle.x, 0);
+        //Camera.main.transform.localRotation = Quaternion.Euler(angle.y, angle.x, 0);
+        //カメラを回転
+        Camera.main.transform.RotateAround(transform.position, transform.up, angle.x);
+        Camera.main.transform.RotateAround(transform.position, transform.right, angle.y);
         //ジャンプ
         if (Input.GetButtonDown("Jump") && !isJumping)
         {
