@@ -4,79 +4,95 @@ using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
     CharacterController charaCon;
     [SerializeField] GameObject shotPrefab;
-    bool isJumping;
     float speed;
     float fallSpeed;
+    int getItemNum;
     Vector2 angle;
     Vector3 velocity;
+    Vector2 lotateAngle;
+
+    public enum State
+    {
+        Normal, Clear,
+    }
+    public State state;
     // Start is called before the first frame update
     void Start()
     {
         charaCon = GetComponent<CharacterController>();
-        isJumping = false;
         speed = 3.0f;
         fallSpeed = 0.0f;
+        getItemNum = 0;
+        lotateAngle = Vector3.zero;
+        state = State.Normal;
     }
 
     // Update is called once per frame
     void Update()
     {
-        //プレイヤの上下左右移動
-        velocity.x = speed * Time.deltaTime * Input.GetAxis("Horizontal_L");
-        velocity.z = speed * Time.deltaTime * Input.GetAxis("Vertical_L");
-
-        //プレイヤの視点変更
-        //if (Input.GetAxis("Vertical_R") != 0.0f)
-        //{
-            //angle.y -= Input.GetAxis("Vertical_R");
-            angle.y = Input.GetAxis("Vertical_R");
-        //}
-        //if (Input.GetAxis("Horizontal_R") != 0.0f)
-        //{
-            angle.x = Input.GetAxis("Horizontal_R");
-        //}
-
-        //Camera.main.transform.localRotation = Quaternion.Euler(angle.y, angle.x, 0);
-        //カメラを回転
-        Camera.main.transform.RotateAround(transform.position, transform.up, angle.x);
-        //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, angle.y);
-        if (Mathf.Abs(Camera.main.transform.rotation.x) <= 90.0f)
+        if (state == State.Normal)
         {
-            Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, angle.y);
-        }
+            //プレイヤの上下左右移動
+            velocity.x = speed * Input.GetAxis("Horizontal");
+            velocity.z = speed * Input.GetAxis("Vertical");
 
-        //ジャンプ
-        if (Input.GetButtonDown("Jump") && !isJumping)
-        {
-            isJumping = true;
-            fallSpeed = 10.0f * Time.deltaTime;
+            //プレイヤの視点変更
+            //Debug.Log(Camera.main.transform.localEulerAngles);
+
+            lotateAngle.x = Input.GetAxis("Horizontal_R");
+            lotateAngle.y = Input.GetAxis("Vertical_R");
+
+            angle += lotateAngle;
+
+            //カメラを回転
+            Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
+            Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
+
+            //着地判定
+            if (charaCon.isGrounded)
+            {
+                fallSpeed = 0.0f;
+                //ジャンプ
+                if (Input.GetButtonDown("Jump"))
+                {
+                    fallSpeed = 10.0f;
+                }
+            }
+            //弾発射
+            if (Input.GetMouseButtonDown(0))
+            {
+                GameObject shot = Instantiate(shotPrefab);
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Vector3 worldDirection = ray.direction;
+                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
+
+                //移動した位置から弾発射
+                shot.transform.position = Camera.main.transform.position
+                    + Camera.main.transform.forward * 5.5f;
+            }
         }
-        fallSpeed += -0.3f * Time.deltaTime;
+        fallSpeed += -0.3f;
         velocity.y += fallSpeed;
 
-        charaCon.Move(velocity);
+        charaCon.Move(velocity * Time.deltaTime);
         velocity = Vector3.zero;
-        //弾発射
-        if (Input.GetMouseButtonDown(0))
-        {
-            GameObject shot = Instantiate(shotPrefab);
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            Vector3 worldDirection = ray.direction;
-            shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
-
-            //移動した位置から弾発射
-            shot.transform.position = Camera.main.transform.position
-                + Camera.main.transform.forward * 5.5f;
-        }
     }
+
     void OnControllerColliderHit(ControllerColliderHit hit)
-    //(Collision collision)
     {
-        isJumping = false;
+        switch (hit.gameObject.tag)
+        {
+            case "Item":
+                //何らかの処理
+                ++getItemNum;
+                Destroy(hit.gameObject);
+                break;
+        }
     }
 }

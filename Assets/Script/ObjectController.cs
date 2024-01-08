@@ -7,6 +7,7 @@ using UnityEngine.Rendering;
 public class ObjectController : MonoBehaviour
 {
     [SerializeField] int life;
+    [SerializeField] GameObject itemPrefab;
     //Rigidbody rb;
     ParticleSystem ps;
 
@@ -26,6 +27,7 @@ public class ObjectController : MonoBehaviour
             {
                 ps.transform.position = this.transform.position;
                 ps.Play();
+                Instantiate(itemPrefab, this.transform.position, new Quaternion());
             }
         }
     }
