@@ -22,8 +22,9 @@ public class GameDirector : MonoBehaviour
     void Update()
     {
         items = GameObject.FindGameObjectsWithTag("HardObject");
-        
-        if(items.Length == 0)
+        GameObject[] item = GameObject.FindGameObjectsWithTag("Item");
+        Debug.Log(item.Length);
+        if (items.Length == 0)
         {
             pc.state = PlayerController.State.Clear;
             Invoke("AfterGameClear", 2.0f);
