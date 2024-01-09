@@ -9,13 +9,12 @@ public class ObjectController : MonoBehaviour
     [SerializeField] int life;
     [SerializeField] GameObject itemPrefab;
     //Rigidbody rb;
-    ParticleSystem ps;
+    [SerializeField] ParticleSystem ps;
 
     // Start is called before the first frame update
     void Start()
     {
         //rb = GetComponent<Rigidbody>();
-        ps = GetComponent<ParticleSystem>();
     }
 
     // Update is called once per frame
@@ -23,12 +22,9 @@ public class ObjectController : MonoBehaviour
     {
         if (life <= 0)
         {
-            if (!ps.isPlaying)
-            {
-                ps.transform.position = this.transform.position;
-                ps.Play();
-                Instantiate(itemPrefab, this.transform.position, new Quaternion());
-            }
+            Instantiate(itemPrefab, this.transform.position, new Quaternion());
+            Instantiate(ps,this.transform.position, new Quaternion());
+            Destroy(gameObject);
         }
     }
 
@@ -39,10 +35,5 @@ public class ObjectController : MonoBehaviour
         {
             --life;
         }
-    }
-
-    void OnParticleSystemStopped()
-    {
-        Destroy(gameObject);
     }
 }

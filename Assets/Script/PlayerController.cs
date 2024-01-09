@@ -5,6 +5,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;
+using UnityEngine.EventSystems;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,6 +17,9 @@ public class PlayerController : MonoBehaviour
     Vector2 angle;
     Vector3 velocity;
     Vector2 lotateAngle;
+    Vector2 playerDirection;
+    Quaternion defaultCameraDirection;
+    Vector3 defaultCameraOffset;
 
     public enum State
     {
@@ -31,11 +35,14 @@ public class PlayerController : MonoBehaviour
         getItemNum = 0;
         lotateAngle = Vector3.zero;
         state = State.Normal;
+        defaultCameraDirection = Camera.main.transform.rotation;
+        defaultCameraOffset = Camera.main.transform.position - transform.position;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (charaCon == null) { return; }
         if (state == State.Normal)
         {
             //プレイヤの上下左右移動
@@ -45,14 +52,21 @@ public class PlayerController : MonoBehaviour
             //プレイヤの視点変更
             //Debug.Log(Camera.main.transform.localEulerAngles);
 
-            lotateAngle.x = Input.GetAxis("Horizontal_R");
-            lotateAngle.y = Input.GetAxis("Vertical_R");
+            playerDirection.x += Input.GetAxis("Horizontal_R");
+            playerDirection.y -= Input.GetAxis("Vertical_R");
+
+            Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
+
+            float Dir = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0, playerDirection.x + Dir, 0);
 
             angle += lotateAngle;
 
+            Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
+
             //カメラを回転
-            Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
-            Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
+            //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
+            //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
             //着地判定
             if (charaCon.isGrounded)
