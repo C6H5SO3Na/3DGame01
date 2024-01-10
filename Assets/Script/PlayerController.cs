@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
         lotateAngle = Vector3.zero;
         state = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
-        defaultCameraOffset = Camera.main.transform.position - transform.position;
+        defaultCameraOffset = Camera.main.transform.position - this.transform.position;
     }
 
     // Update is called once per frame

@@ -12,7 +12,7 @@ public class CameraContoroller : MonoBehaviour
     void Start()
     {
         direction = player.transform.position;
-        //direction = this.transform.position - player.transform.position;
+        direction = this.transform.position - player.transform.position;
     }
 
     // Update is called once per frame
