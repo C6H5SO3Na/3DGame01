@@ -1,29 +1,31 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.AI;
 
-public class ObjectController : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
-    [SerializeField] int life;
+    [SerializeField] GameObject goal;
     [SerializeField] GameObject itemPrefab;
-    //Rigidbody rb;
     [SerializeField] ParticleSystem ps;
-
+    [SerializeField] int life;
+    NavMeshAgent agent;
     // Start is called before the first frame update
     void Start()
     {
-        //rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        //ñ⁄ïWÇçXêV
+        agent.destination = goal.transform.position;
+
         if (life <= 0)
         {
             Instantiate(itemPrefab, this.transform.position, new Quaternion());
-            Instantiate(ps,this.transform.position, new Quaternion());
+            Instantiate(ps, this.transform.position, new Quaternion());
             Destroy(gameObject);
         }
     }

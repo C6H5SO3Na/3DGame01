@@ -6,17 +6,19 @@ using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.XR;
+using UnityEngine.Assertions.Must;
 
 public class PlayerController : MonoBehaviour
 {
     CharacterController charaCon;
     [SerializeField] GameObject shotPrefab;
+    [SerializeField] GameObject weaponPrefab;
+    [SerializeField] float gravity;
     float speed;
-    float fallSpeed;
-    int getItemNum;
+    public static int getItemNum;
     Vector2 angle;
-    Vector3 velocity;
-    Vector2 lotateAngle;
+    Vector3 moveDirection;
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
     Vector3 defaultCameraOffset;
@@ -31,9 +33,7 @@ public class PlayerController : MonoBehaviour
     {
         charaCon = GetComponent<CharacterController>();
         speed = 3.0f;
-        fallSpeed = 0.0f;
         getItemNum = 0;
-        lotateAngle = Vector3.zero;
         state = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -46,8 +46,25 @@ public class PlayerController : MonoBehaviour
         if (state == State.Normal)
         {
             //プレイヤの上下左右移動
-            velocity.x = speed * Input.GetAxis("Horizontal");
-            velocity.z = speed * Input.GetAxis("Vertical");
+            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            {
+                Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+                if (inputVector.magnitude > 1.0f)
+                {
+                    inputVector = inputVector.normalized;
+                }
+                moveDirection.x = speed * inputVector.x;
+                moveDirection.z = speed * inputVector.z;
+
+                float Dir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0, playerDirection.x + Dir, 0);
+            }
+            else
+            {
+                moveDirection.x = moveDirection.z = 0;//何も入力されていないときは移動量を0にする
+            }
+
+            //angle += lotateAngle;
 
             //プレイヤの視点変更
             //Debug.Log(Camera.main.transform.localEulerAngles);
@@ -56,12 +73,6 @@ public class PlayerController : MonoBehaviour
             playerDirection.y -= Input.GetAxis("Vertical_R");
 
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
-
-            float Dir = Mathf.Atan2(velocity.x, velocity.z) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(0, playerDirection.x + Dir, 0);
-
-            angle += lotateAngle;
-
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
 
             //カメラを回転
@@ -71,11 +82,10 @@ public class PlayerController : MonoBehaviour
             //着地判定
             if (charaCon.isGrounded)
             {
-                fallSpeed = 0.0f;
                 //ジャンプ
                 if (Input.GetButtonDown("Jump"))
                 {
-                    fallSpeed = 10.0f;
+                    moveDirection.y = 5.0f;
                 }
             }
             //弾発射
@@ -90,12 +100,27 @@ public class PlayerController : MonoBehaviour
                 shot.transform.position = Camera.main.transform.position
                     + Camera.main.transform.forward * 5.5f;
             }
-        }
-        fallSpeed += -0.3f;
-        velocity.y += fallSpeed;
 
-        charaCon.Move(velocity * Time.deltaTime);
-        velocity = Vector3.zero;
+            //強力弾発射
+            if (Input.GetButtonDown("Fire1"))
+            {
+                GameObject shot = Instantiate(weaponPrefab);
+                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
+                Vector3 worldDirection = ray.direction;
+                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
+
+                //移動した位置から弾発射
+                shot.transform.position = Camera.main.transform.position
+                    + Camera.main.transform.forward * 5.5f;
+            }
+        }
+
+        moveDirection.y -= gravity * Time.deltaTime;
+
+        Vector3 globalDirection = Quaternion.Euler(0, playerDirection.x, 0) * moveDirection;
+        charaCon.Move(globalDirection * Time.deltaTime);
+        //moveDirection = Vector3.zero;
+        //charaCon.Move(moveDirection * Time.deltaTime);
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
@@ -103,9 +128,9 @@ public class PlayerController : MonoBehaviour
         switch (hit.gameObject.tag)
         {
             case "Item":
-                //何らかの処理
-                ++getItemNum;
                 Destroy(hit.gameObject);
+                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                ++getItemNum;
                 break;
         }
     }

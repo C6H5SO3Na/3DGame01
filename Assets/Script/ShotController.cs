@@ -17,12 +17,15 @@ public class ShotController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float fps = 1.0f / Time.deltaTime;
-        if (mainCnt >= 10.0f * fps)
+        if (gameObject.CompareTag("Shot"))
         {
-            Destroy(gameObject);
+            float fps = 1.0f / Time.deltaTime;
+            if (mainCnt >= 10.0f * fps)
+            {
+                Destroy(gameObject);
+            }
+            ++mainCnt;
         }
-        ++mainCnt;
     }
 
     //’e‚ð”­ŽË
@@ -33,11 +36,21 @@ public class ShotController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("NormalObject") ||
-            collision.gameObject.CompareTag("HardObject"))
+        if (gameObject.CompareTag("Weapon"))
+        {
+            RaycastHit[] hits = Physics.SphereCastAll(transform.position, 10.0f, Vector3.forward);
+            foreach (var hit in hits)
+            {
+                if (hit.collider.gameObject.tag.Contains("Object"))
+                {
+                    Destroy(hit.collider.gameObject);
+                }
+            }
+            Destroy(this.gameObject);
+        }
+        if (collision.gameObject.tag.Contains("Object"))
         {
             Destroy(this.gameObject);
         }
-
     }
 }

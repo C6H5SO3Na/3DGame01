@@ -8,6 +8,9 @@ TagManager:
   - Shot
   - NormalObject
   - HardObject
+  - Item
+  - Destroyed
+  - Weapon
   layers:
   - Default
   - TransparentFX
