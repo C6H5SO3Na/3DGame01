@@ -11,8 +11,11 @@ public class GameDirector : MonoBehaviour
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI clearText;
     [SerializeField] TextMeshProUGUI itemText;
+    [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
     PlayerController pc;
+
+    int score = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -34,10 +37,21 @@ public class GameDirector : MonoBehaviour
         }
 
         itemText.text = $"Item:{PlayerController.getItemNum} {items.Length}";
+        scoreText.text = $"Score:{GetScore()}";
     }
 
     void AfterGameClear()
     {
         SceneManager.LoadScene("TitleScene");
+    }
+
+    public void AddScore(int n)
+    {
+        score += n;
+    }
+
+    public int GetScore()
+    {
+        return score;
     }
 }

@@ -5,7 +5,7 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] GameObject goal;
+    GameObject goal;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] ParticleSystem ps;
     [SerializeField] int life;
@@ -14,6 +14,7 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        goal = GameObject.Find("Player(Clone)");
     }
 
     // Update is called once per frame
