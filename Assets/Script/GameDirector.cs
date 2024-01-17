@@ -42,7 +42,7 @@ public class GameDirector : MonoBehaviour
 
     void AfterGameClear()
     {
-        SceneManager.LoadScene("TitleScene");
+        SceneManager.LoadScene("ResultScene");
     }
 
     public void AddScore(int n)

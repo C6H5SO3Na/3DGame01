@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
 
     public enum State
     {
-        Normal, Clear,
+        Normal, Clear,//プレイ中とクリア時
     }
     public State state;
     // Start is called before the first frame update
@@ -61,7 +61,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
-                moveDirection.x = moveDirection.z = 0;//何も入力されていないときは移動量を0にする
+                moveDirection.x = moveDirection.z = 0;//何も入力されていないときはxzの移動量を0にする
             }
 
             //angle += lotateAngle;
@@ -113,6 +113,10 @@ public class PlayerController : MonoBehaviour
                 shot.transform.position = Camera.main.transform.position
                     + Camera.main.transform.forward * 5.5f;
             }
+        }
+        else
+        {
+            moveDirection.x = moveDirection.z = 0;//プレイしていないときはxzの移動量を0にする
         }
 
         moveDirection.y -= gravity * Time.deltaTime;

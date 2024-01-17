@@ -6,7 +6,7 @@ using UnityEngine.Rendering;
 
 public class ObjectController : MonoBehaviour
 {
-    GameDirector gameDirector;
+    GameObject gameDirector;
     [SerializeField] int life;
     [SerializeField] GameObject itemPrefab;
     //Rigidbody rb;
@@ -16,6 +16,7 @@ public class ObjectController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        gameDirector = GameObject.Find("GameDirector");
         //rb = GetComponent<Rigidbody>();
     }
 
@@ -31,7 +32,7 @@ public class ObjectController : MonoBehaviour
             {
                 type = 1;
             }
-            gameDirector.AddScore(score[type]);
+            gameDirector.GetComponent<GameDirector>().AddScore(score[type]);
             Destroy(gameObject);
         }
     }
