@@ -13,9 +13,10 @@ GameObject:
   - component: {fileID: 7384345400006150975}
   - component: {fileID: 7160755004854692708}
   - component: {fileID: 6198318653207855320}
+  - component: {fileID: 5050129511048455053}
   m_Layer: 0
-  m_Name: Item
-  m_TagString: Item
+  m_Name: SpeedItem
+  m_TagString: SpeedItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -33,7 +34,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &3589709091920369387
 MeshFilter:
@@ -63,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 845e821366ca84c4588fea2d8059ff62, type: 2}
+  - {fileID: 2100000, guid: c1490d8d707e9b14a804884828d12a79, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -133,3 +134,15 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!114 &5050129511048455053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6703413403559910156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f0e1dc1483c63844ac36138f260793e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

@@ -12,6 +12,7 @@ public class ObjectController : MonoBehaviour
     //Rigidbody rb;
     [SerializeField] ParticleSystem ps;
     int[] score = new int[]{1, 5};
+    public bool hasItem;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,10 @@ public class ObjectController : MonoBehaviour
     {
         if (life <= 0)
         {
-            Instantiate(itemPrefab, this.transform.position, new Quaternion());
+            if (hasItem)
+            {
+                Instantiate(itemPrefab, this.transform.position, new Quaternion());
+            }
             Instantiate(ps,this.transform.position, new Quaternion());
             int type = 0;
             if (gameObject.CompareTag("HardObject"))
@@ -43,5 +47,10 @@ public class ObjectController : MonoBehaviour
         {
             --life;
         }
+    }
+
+    public void SetLife(int l)
+    {
+        life = l;
     }
 }

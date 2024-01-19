@@ -38,4 +38,12 @@ public class EnemyController : MonoBehaviour
             --life;
         }
     }
+
+    void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if (hit.gameObject.CompareTag("Player"))
+        {
+            hit.gameObject.SetActive(false);
+        }
+    }
 }

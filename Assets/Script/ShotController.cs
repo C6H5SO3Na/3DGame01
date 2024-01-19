@@ -19,8 +19,7 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Shot"))
         {
-            float fps = 1.0f / Time.deltaTime;
-            if (mainCnt >= 10.0f * fps)
+            if (this.rb.velocity == Vector3.zero)
             {
                 Destroy(gameObject);
             }
@@ -43,7 +42,7 @@ public class ShotController : MonoBehaviour
             {
                 if (hit.collider.gameObject.tag.Contains("Object"))
                 {
-                    Destroy(hit.collider.gameObject);
+                    hit.collider.GetComponent<ObjectController>().SetLife(0);
                 }
             }
             Destroy(this.gameObject);

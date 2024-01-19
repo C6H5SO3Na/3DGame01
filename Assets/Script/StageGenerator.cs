@@ -79,6 +79,7 @@ public class StageGenerator : MonoBehaviour
             normalObjects[i] = Instantiate(normalObjectPrefab);
             normalObjects[i].transform.eulerAngles = new Vector3();
             normalObjects[i].transform.position = new Vector3(Random.Range(-25, 25), 1.0f, Random.Range(-25, 25));
+            normalObjects[i].GetComponent<ObjectController>().hasItem = (i % 3 == 0);
         }
 
         //硬いオブジェクトを取得

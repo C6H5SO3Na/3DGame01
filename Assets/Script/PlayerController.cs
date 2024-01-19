@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
     float speed;
-    public static int getItemNum;
+    public static int[] getItemNum = new int[2];
     Vector2 angle;
     Vector3 moveDirection;
     Vector2 playerDirection;
@@ -27,13 +27,16 @@ public class PlayerController : MonoBehaviour
     {
         Normal, Clear,//プレイ中とクリア時
     }
-    public State state;
+    State state;
     // Start is called before the first frame update
     void Start()
     {
         charaCon = GetComponent<CharacterController>();
         speed = 3.0f;
-        getItemNum = 0;
+        for (int i = 0; i < getItemNum.Length; ++i)
+        {
+            getItemNum[i] = 0;
+        }
         state = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -89,10 +92,10 @@ public class PlayerController : MonoBehaviour
                 }
             }
             //弾発射
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetButtonDown("Fire1"))
             {
                 GameObject shot = Instantiate(shotPrefab);
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
                 shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
 
@@ -100,10 +103,23 @@ public class PlayerController : MonoBehaviour
                 shot.transform.position = Camera.main.transform.position
                     + Camera.main.transform.forward * 5.5f;
             }
+            //マウス時代
+            //if (Input.GetMouseButtonDown(0))
+            //{
+            //    GameObject shot = Instantiate(shotPrefab);
+            //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            //    Vector3 worldDirection = ray.direction;
+            //    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
+
+            //    //移動した位置から弾発射
+            //    shot.transform.position = Camera.main.transform.position
+            //        + Camera.main.transform.forward * 5.5f;
+            //}
 
             //強力弾発射
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("Fire2") && getItemNum[0] != 0)
             {
+                --getItemNum[0];
                 GameObject shot = Instantiate(weaponPrefab);
                 Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
@@ -131,11 +147,29 @@ public class PlayerController : MonoBehaviour
     {
         switch (hit.gameObject.tag)
         {
-            case "Item":
+            case "WeaponItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                ++getItemNum;
+                ++getItemNum[0];
+                GameDirector.score += 5;
+                break;
+            case "SpeedItem":
+                Destroy(hit.gameObject);
+                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                ++getItemNum[1];
+                GameDirector.score += 2;
+                speed *= 1.05f;
                 break;
         }
+    }
+
+    public void SetState(State s_)
+    {
+        state = s_;
+    }
+
+    public State GetState()
+    {
+        return state;
     }
 }

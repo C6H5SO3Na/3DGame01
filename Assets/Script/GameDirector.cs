@@ -10,15 +10,17 @@ public class GameDirector : MonoBehaviour
     GameObject[] items;
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI clearText;
-    [SerializeField] TextMeshProUGUI itemText;
+    [SerializeField] TextMeshProUGUI weaponText;
+    [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
     PlayerController pc;
 
-    int score = 0;
+    public static int score;
     // Start is called before the first frame update
     void Start()
     {
+        score = 0;
         Application.targetFrameRate = 60;
         pc = player.GetComponent<PlayerController>();
     }
@@ -26,17 +28,24 @@ public class GameDirector : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKey(KeyCode.Escape))
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+        }
         hardObjects = GameObject.FindGameObjectsWithTag("HardObject");
-        items = GameObject.FindGameObjectsWithTag("Item");
         //硬いオブジェクトが全部なくなったらゲームクリア
         if (hardObjects.Length == 0)
         {
-            pc.state = PlayerController.State.Clear;
+            pc.SetState(PlayerController.State.Clear);
             Invoke("AfterGameClear", 2.0f);
             clearText.text = "Game Clear!!!";
         }
-
-        itemText.text = $"Item:{PlayerController.getItemNum} {items.Length}";
+        weaponText.text = $"Item:{PlayerController.getItemNum[0]}";
+        hardObjectsText.text = $"Hard Objects:{hardObjects.Length}";
         scoreText.text = $"Score:{GetScore()}";
     }
 
