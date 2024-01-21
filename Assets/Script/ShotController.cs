@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class ShotController : MonoBehaviour
@@ -19,7 +20,7 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Shot"))
         {
-            if (this.rb.velocity == Vector3.zero)
+            if (this.rb.velocity == Vector3.zero || this.transform.position.y < -100.0f)
             {
                 Destroy(gameObject);
             }

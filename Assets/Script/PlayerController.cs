@@ -15,6 +15,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
+    [SerializeField] ParticleSystem ps;
+
     float speed;
     public static int[] getItemNum = new int[2];
     Vector2 angle;
@@ -22,6 +24,8 @@ public class PlayerController : MonoBehaviour
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
     Vector3 defaultCameraOffset;
+
+    //カメラに制限を掛けるにはどうすればよいか?
 
     public enum State
     {
@@ -70,7 +74,7 @@ public class PlayerController : MonoBehaviour
             //angle += lotateAngle;
 
             //プレイヤの視点変更
-            //Debug.Log(Camera.main.transform.localEulerAngles);
+            Debug.Log(Camera.main.transform.localEulerAngles);
 
             playerDirection.x += Input.GetAxis("Horizontal_R");
             playerDirection.y -= Input.GetAxis("Vertical_R");
@@ -101,7 +105,7 @@ public class PlayerController : MonoBehaviour
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 5.5f;
+                    + Camera.main.transform.forward * 8.0f;
             }
             //マウス時代
             //if (Input.GetMouseButtonDown(0))
@@ -127,7 +131,7 @@ public class PlayerController : MonoBehaviour
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 5.5f;
+                    + Camera.main.transform.forward * 8.0f;
             }
         }
         else
@@ -159,6 +163,9 @@ public class PlayerController : MonoBehaviour
                 ++getItemNum[1];
                 GameDirector.score += 2;
                 speed *= 1.05f;
+                break;
+            case "Enemy":
+                Instantiate(ps, this.transform.position, new Quaternion());
                 break;
         }
     }

@@ -12,6 +12,7 @@ TagManager:
   - Weapon
   - WeaponItem
   - SpeedItem
+  - Enemy
   layers:
   - Default
   - TransparentFX

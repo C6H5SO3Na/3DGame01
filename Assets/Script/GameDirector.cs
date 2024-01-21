@@ -7,7 +7,6 @@ using TMPro;
 
 public class GameDirector : MonoBehaviour
 {
-    GameObject[] items;
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI clearText;
     [SerializeField] TextMeshProUGUI weaponText;
