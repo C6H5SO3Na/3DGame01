@@ -99,13 +99,13 @@ public class PlayerController : MonoBehaviour
             if (Input.GetButtonDown("Fire1"))
             {
                 GameObject shot = Instantiate(shotPrefab);
-                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
+                Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 1.2f));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
-                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
+                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 500.0f);
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 8.0f;
+                    + Camera.main.transform.forward * 9.0f;
             }
             //マウス時代
             //if (Input.GetMouseButtonDown(0))
