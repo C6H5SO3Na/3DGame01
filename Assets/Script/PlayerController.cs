@@ -11,19 +11,22 @@ using UnityEngine.Assertions.Must;
 
 public class PlayerController : MonoBehaviour
 {
-    CharacterController charaCon;
+    CharacterController controller;
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
     [SerializeField] ParticleSystem ps;
 
     float speed;
-    public static int[] getItemNum = new int[2];
+    public static int[] getItemNum = new int[4];
     Vector2 angle;
     Vector3 moveDirection;
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
     Vector3 defaultCameraOffset;
+    bool isRapidFire = false;
+    bool isAbleMultiShot = false;
+    int mainCnt = 0;
 
     //カメラに制限を掛けるにはどうすればよいか?
 
@@ -35,8 +38,10 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        charaCon = GetComponent<CharacterController>();
+        controller = GetComponent<CharacterController>();
         speed = 3.0f;
+
+        //アイテムの取得数初期化
         for (int i = 0; i < getItemNum.Length; ++i)
         {
             getItemNum[i] = 0;
@@ -49,7 +54,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (charaCon == null) { return; }
+        if (controller == null) { return; }
         if (state == State.Normal)
         {
             //プレイヤの上下左右移動
@@ -87,7 +92,7 @@ public class PlayerController : MonoBehaviour
             //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
             //着地判定
-            if (charaCon.isGrounded)
+            if (controller.isGrounded)
             {
                 //ジャンプ
                 if (Input.GetButtonDown("Jump"))
@@ -96,16 +101,30 @@ public class PlayerController : MonoBehaviour
                 }
             }
             //弾発射
-            if (Input.GetButtonDown("Fire1"))
+            if (Input.GetButtonDown("Fire1") || RapidFireOperation())
             {
-                GameObject shot = Instantiate(shotPrefab);
-                Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 1.2f));//真ん中よりやや上をめがけて発射
-                Vector3 worldDirection = ray.direction;
-                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 500.0f);
+                int shotNum = 1;
+                if (isAbleMultiShot)
+                {
+                    shotNum = 3;
+                }
+                //距離
+                Vector3[] difference = {
+                    Vector3.zero,
+                    Camera.main.transform.right * 0.5f,
+                    Camera.main.transform.right * -0.5f
+                };
+                for (int i = 0; i < shotNum; ++i)
+                {
+                    GameObject shot = Instantiate(shotPrefab);
+                    Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
+                    Vector3 worldDirection = ray.direction;
+                    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 500.0f);
 
-                //移動した位置から弾発射
-                shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 9.0f;
+                    //移動した位置から弾発射
+                    shot.transform.position = Camera.main.transform.position
+                        + Camera.main.transform.forward * 6.0f + difference[i];
+                }
             }
             //マウス時代
             //if (Input.GetMouseButtonDown(0))
@@ -131,7 +150,7 @@ public class PlayerController : MonoBehaviour
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 8.0f;
+                    + Camera.main.transform.forward * 6.0f;
             }
         }
         else
@@ -142,30 +161,46 @@ public class PlayerController : MonoBehaviour
         moveDirection.y -= gravity * Time.deltaTime;
 
         Vector3 globalDirection = Quaternion.Euler(0, playerDirection.x, 0) * moveDirection;
-        charaCon.Move(globalDirection * Time.deltaTime);
+        controller.Move(globalDirection * Time.deltaTime);
         //moveDirection = Vector3.zero;
         //charaCon.Move(moveDirection * Time.deltaTime);
+
+        ++mainCnt;
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
         switch (hit.gameObject.tag)
         {
-            case "WeaponItem":
+            case "SpeedItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
                 ++getItemNum[0];
-                GameDirector.score += 5;
+                GameDirector.score += 1;
+                speed *= 1.05f;
                 break;
-            case "SpeedItem":
+            case "RapidFireItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
                 ++getItemNum[1];
                 GameDirector.score += 2;
-                speed *= 1.05f;
+                isRapidFire = true;
+                break;
+            case "MultiShotItem":
+                Destroy(hit.gameObject);
+                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                ++getItemNum[2];
+                GameDirector.score += 2;
+                isAbleMultiShot = true;
+                break;
+            case "WeaponItem":
+                Destroy(hit.gameObject);
+                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                ++getItemNum[3];
+                GameDirector.score += 5;
                 break;
             case "Enemy":
-                Instantiate(ps, this.transform.position, new Quaternion());
+                Instantiate(ps, this.transform.position, Quaternion.identity);
                 break;
         }
     }
@@ -178,5 +213,10 @@ public class PlayerController : MonoBehaviour
     public State GetState()
     {
         return state;
+    }
+
+    bool RapidFireOperation()
+    {
+        return isRapidFire && Input.GetButton("Fire1") && mainCnt % 8 == 0;
     }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,11 +9,11 @@ public class ObjectController : MonoBehaviour
 {
     GameObject gameDirector;
     [SerializeField] int life;
-    [SerializeField] GameObject itemPrefab;
+    [SerializeField] GameObject[] itemPrefab;
     //Rigidbody rb;
     [SerializeField] ParticleSystem ps;
     int[] score = new int[]{1, 5};
-    public bool hasItem;
+    public int hasItemNum;
 
     // Start is called before the first frame update
     void Start()
@@ -26,11 +27,11 @@ public class ObjectController : MonoBehaviour
     {
         if (life <= 0)
         {
-            if (hasItem)
+            if (hasItemNum != 0)
             {
-                Instantiate(itemPrefab, this.transform.position, new Quaternion());
+                Instantiate(itemPrefab[hasItemNum], this.transform.position, Quaternion.identity);
             }
-            Instantiate(ps,this.transform.position, new Quaternion());
+            Instantiate(ps,this.transform.position, Quaternion.identity);
             int type = 0;
             if (gameObject.CompareTag("HardObject"))
             {

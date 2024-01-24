@@ -148,9 +148,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   life: 5
-  itemPrefab: {fileID: 6703413403559910156, guid: 4be80db2d78fc3543b46c74c57e90e9c, type: 3}
+  itemPrefab:
+  - {fileID: 6703413403559910156, guid: 4be80db2d78fc3543b46c74c57e90e9c, type: 3}
+  - {fileID: 6703413403559910156, guid: 8edef390ea7a0934188455f5b392b5ee, type: 3}
+  - {fileID: 6703413403559910156, guid: 856fdfdd317f35f4bb564e568cb177dc, type: 3}
+  - {fileID: 6703413403559910156, guid: a7e4cd7be4bd4af4aa6f160160434409, type: 3}
   ps: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
-  hasItem: 0
+  hasItemNum: 0
 --- !u!208 &6883600588622826709
 NavMeshObstacle:
   m_ObjectHideFlags: 0

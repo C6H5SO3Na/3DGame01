@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 6198318653207855320}
   - component: {fileID: 5050129511048455053}
   m_Layer: 0
-  m_Name: SpeedItem
-  m_TagString: SpeedItem
+  m_Name: MultiShotItem
+  m_TagString: MultiShotItem
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: c1490d8d707e9b14a804884828d12a79, type: 2}
+  - {fileID: 2100000, guid: 6cf9bc2b099973f4390037f1b70ddba3, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

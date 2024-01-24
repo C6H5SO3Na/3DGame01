@@ -18,29 +18,32 @@ public class StageGenerator : MonoBehaviour
     //}
     //Prefab[] walls = new Prefab[4];
 
+    //壁
     [SerializeField] GameObject wallPrefab;
     List<GameObject> walls = new List<GameObject>();
 
+    //床
     [SerializeField] GameObject floorPrefab;
+    Vector3 floorPos = Vector3.zero;
 
-    //床の位置
-    Vector3 floorPos = new Vector3(0.0f, 0.0f, 0.0f);
-
+    //通常オブジェクト
     [SerializeField] GameObject normalObjectPrefab;
     [SerializeField] int normalObjectNum;
     List<GameObject> normalObjects = new List<GameObject>();
 
+    //硬いオブジェクト
     [SerializeField] GameObject hardObjectPrefab;
     [SerializeField] int hardObjectNum;
     List<GameObject> hardObjects = new List<GameObject>();
 
+    //敵
     [SerializeField] GameObject enemyPrefab;
     [SerializeField] int enemyNum;
     List<GameObject> enemies = new List<GameObject>();
 
-    //プレイヤの位置
+    //プレイヤ
     [SerializeField] GameObject playerPrefab;
-    Vector3 playerPos = new Vector3(0.0f, 0.0f, 0.0f);
+    Vector3 playerPos = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
@@ -67,7 +70,7 @@ public class StageGenerator : MonoBehaviour
             SetPrefab(walls, Rot, Pos);
         }
 
-        //床オブジェクトを取得
+        //床オブジェクトの設定
         floorPrefab = Instantiate(floorPrefab);
         floorPrefab.transform.position = floorPos;
 
@@ -150,6 +153,10 @@ public class StageGenerator : MonoBehaviour
             ovjects[i] = Instantiate(ovjects[i]);
             ovjects[i].transform.eulerAngles = Rot[i];
             ovjects[i].transform.position = Pos[i];
+            if (ovjects[i].tag.Contains("Object"))
+            {
+                ovjects[i].GetComponent<ObjectController>().hasItemNum = 2;
+            }
         }
     }
 }

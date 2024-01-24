@@ -13,6 +13,8 @@ TagManager:
   - WeaponItem
   - SpeedItem
   - Enemy
+  - RapidFireItem
+  - MultiShotItem
   layers:
   - Default
   - TransparentFX

@@ -7,7 +7,7 @@ public class ShotController : MonoBehaviour
 {
     GameObject player;
     Rigidbody rb;
-    int mainCnt = 0;
+    float mainCnt = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
@@ -20,11 +20,11 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Shot"))
         {
-            if (this.rb.velocity == Vector3.zero || this.transform.position.y < -100.0f)
+            if (mainCnt >= 5.0f || this.transform.position.y < -100.0f)
             {
                 Destroy(gameObject);
             }
-            ++mainCnt;
+            mainCnt += Time.deltaTime;
         }
     }
 
