@@ -19,7 +19,6 @@ public class PlayerController : MonoBehaviour
 
     float speed;
     public static int[] getItemNum = new int[4];
-    Vector2 angle;
     Vector3 moveDirection;
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
@@ -27,8 +26,6 @@ public class PlayerController : MonoBehaviour
     bool isRapidFire = false;
     bool isAbleMultiShot = false;
     int mainCnt = 0;
-
-    //ƒJƒƒ‰‚É§ŒÀ‚ğŠ|‚¯‚é‚É‚Í‚Ç‚¤‚·‚ê‚Î‚æ‚¢‚©?
 
     public enum State
     {
@@ -83,6 +80,9 @@ public class PlayerController : MonoBehaviour
 
             playerDirection.x += Input.GetAxis("Horizontal_R");
             playerDirection.y -= Input.GetAxis("Vertical_R");
+
+            //ƒJƒƒ‰‚Ìã‰º‚ğ§ŒÀ
+            playerDirection.y = Mathf.Clamp(playerDirection.y, 0.0f, 90.0f);
 
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
             //Camera.main.transform.localEulerAngles;

@@ -15,11 +15,11 @@ public class GameDirector : MonoBehaviour
     [SerializeField] GameObject player;
     PlayerController pc;
 
-    public static int score;
+    public static int stage = 1;
+    public static int score = 0;
     // Start is called before the first frame update
     void Start()
     {
-        score = 0;
         Application.targetFrameRate = 60;
         pc = player.GetComponent<PlayerController>();
     }
@@ -50,7 +50,8 @@ public class GameDirector : MonoBehaviour
 
     void AfterGameClear()
     {
-        //SceneManager.LoadScene("ResultScene");
+        ++stage;
+        SceneManager.LoadScene("GameScene");
     }
 
     public void AddScore(int n)

@@ -5,16 +5,10 @@ using UnityEngine.Rendering;
 
 public class StageGenerator : MonoBehaviour
 {
-    //struct PrefabInfo
-    //{
-    //    Vector3 Rot;
-    //    Vector3 Pos;
-    //}
-
     //struct Prefab
     //{
     //    public GameObject ovject;//object
-    //    PrefabInfo info;
+    //    List<GameObject> ovjects;
     //}
     //Prefab[] walls = new Prefab[4];
 
@@ -28,17 +22,17 @@ public class StageGenerator : MonoBehaviour
 
     //通常オブジェクト
     [SerializeField] GameObject normalObjectPrefab;
-    [SerializeField] int normalObjectNum;
+    int[] normalObjectNum = { 1, 3, 4 };
     List<GameObject> normalObjects = new List<GameObject>();
 
     //硬いオブジェクト
     [SerializeField] GameObject hardObjectPrefab;
-    [SerializeField] int hardObjectNum;
+    int[] hardObjectNum = { 1, 3, 4 };
     List<GameObject> hardObjects = new List<GameObject>();
 
     //敵
     [SerializeField] GameObject enemyPrefab;
-    [SerializeField] int enemyNum;
+    int[] enemyNum = { 1, 3, 4 };
     List<GameObject> enemies = new List<GameObject>();
 
     //プレイヤ
@@ -76,7 +70,7 @@ public class StageGenerator : MonoBehaviour
 
         //通常オブジェクトの設定
         {
-            for (int i = 0; i < normalObjectNum; ++i)
+            for (int i = 0; i < normalObjectNum[GameDirector.stage - 1]; ++i)
             {
                 normalObjects.Add(normalObjectPrefab);
             }
@@ -99,7 +93,7 @@ public class StageGenerator : MonoBehaviour
 
         //硬いオブジェクトの設定
         {
-            for (int i = 0; i < hardObjectNum; ++i)
+            for (int i = 0; i < hardObjectNum[GameDirector.stage - 1]; ++i)
             {
                 hardObjects.Add(hardObjectPrefab);
             }
@@ -121,7 +115,7 @@ public class StageGenerator : MonoBehaviour
 
         //敵の設定
         {
-            for (int i = 0; i < enemyNum; ++i)
+            for (int i = 0; i < enemyNum[GameDirector.stage - 1]; ++i)
             {
                 enemies.Add(enemyPrefab);
             }
