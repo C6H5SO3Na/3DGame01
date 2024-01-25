@@ -85,6 +85,7 @@ public class PlayerController : MonoBehaviour
             playerDirection.y -= Input.GetAxis("Vertical_R");
 
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
+            //Camera.main.transform.localEulerAngles;
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
 
             //カメラを回転
@@ -114,6 +115,7 @@ public class PlayerController : MonoBehaviour
                     Camera.main.transform.right * 0.5f,
                     Camera.main.transform.right * -0.5f
                 };
+                //マルチショットが有効になっている場合、3つの弾を発射
                 for (int i = 0; i < shotNum; ++i)
                 {
                     GameObject shot = Instantiate(shotPrefab);
