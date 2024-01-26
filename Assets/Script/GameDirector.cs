@@ -9,11 +9,10 @@ public class GameDirector : MonoBehaviour
 {
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI clearText;
-    [SerializeField] TextMeshProUGUI weaponText;
+    //[SerializeField] TextMeshProUGUI weaponText;
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
-    PlayerController pc;
 
     public static int stage = 1;
     public static int score = 0;
@@ -21,7 +20,6 @@ public class GameDirector : MonoBehaviour
     void Start()
     {
         Application.targetFrameRate = 60;
-        pc = player.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -39,18 +37,27 @@ public class GameDirector : MonoBehaviour
         //硬いオブジェクトが全部なくなったらゲームクリア
         if (hardObjects.Length == 0)
         {
-            pc.SetState(PlayerController.State.Clear);
-            Invoke("AfterGameClear", 2.0f);
+            PlayerController.playerState = PlayerController.State.Clear;
+            Invoke("ToNextStage", 2.0f);
             clearText.text = "Game Clear!!!";
         }
-        weaponText.text = $"Item:{PlayerController.getItemNum[3]}";
+
+        //プレイヤがやられたら、同じコースをやり直し
+        if (PlayerController.playerState == PlayerController.State.Dead)
+        {
+            Invoke("ToNextStage", 2.0f);
+        }
+        //weaponText.text = $"Item:{PlayerController.getItemNum[3]}";
         hardObjectsText.text = $"Hard Objects:{hardObjects.Length}";
         scoreText.text = $"Score:{GetScore()}";
     }
 
-    void AfterGameClear()
+    void ToNextStage()
     {
-        ++stage;
+        if (PlayerController.playerState == PlayerController.State.Clear)
+        {
+            ++stage;
+        }
         SceneManager.LoadScene("GameScene");
     }
 

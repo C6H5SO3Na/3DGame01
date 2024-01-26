@@ -12,7 +12,7 @@ public class ObjectController : MonoBehaviour
     [SerializeField] GameObject[] itemPrefab;
     //Rigidbody rb;
     [SerializeField] ParticleSystem ps;
-    int[] score = new int[]{1, 5};
+    int[] score = new int[] { 1, 5 };
     public int hasItemNum;
 
     // Start is called before the first frame update
@@ -29,9 +29,9 @@ public class ObjectController : MonoBehaviour
         {
             if (hasItemNum != 0)
             {
-                Instantiate(itemPrefab[hasItemNum], this.transform.position, Quaternion.identity);
+                Instantiate(itemPrefab[hasItemNum], transform);
             }
-            Instantiate(ps,this.transform.position, Quaternion.identity);
+            Instantiate(ps, this.transform.position,Quaternion.identity);
             int type = 0;
             if (gameObject.CompareTag("HardObject"))
             {

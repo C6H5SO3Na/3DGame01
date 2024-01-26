@@ -22,22 +22,48 @@ public class StageGenerator : MonoBehaviour
 
     //通常オブジェクト
     [SerializeField] GameObject normalObjectPrefab;
-    int[] normalObjectNum = { 1, 3, 4 };
+    int[] normalObjectNum = { 3, 4, 19, 20, 50 };
     List<GameObject> normalObjects = new List<GameObject>();
+
+    Dictionary<int, string> take;
+    //List<List<Vector3>> normalObjectData = new Vector3[,]
+    //{
+    //    //{
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //},
+    //    //{
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //},
+    //    //{
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //},
+    //    //{
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //    new Vector3(0, 0, 0),
+    //    //},
+    //};
 
     //硬いオブジェクト
     [SerializeField] GameObject hardObjectPrefab;
-    int[] hardObjectNum = { 1, 3, 4 };
+    int[] hardObjectNum = { 1, 2, 4, 20, 50 };
     List<GameObject> hardObjects = new List<GameObject>();
 
     //敵
     [SerializeField] GameObject enemyPrefab;
-    int[] enemyNum = { 1, 3, 4 };
+    int[] enemyNum = { 0, 0, 1, 2, 3 };
     List<GameObject> enemies = new List<GameObject>();
 
     //プレイヤ
     [SerializeField] GameObject playerPrefab;
-    Vector3 playerPos = Vector3.zero;
+    Vector3 playerPos = new Vector3(0, 3, 0);
 
     // Start is called before the first frame update
     void Start()
@@ -129,6 +155,7 @@ public class StageGenerator : MonoBehaviour
             SetPrefab(enemies, Rot, Pos);
         }
 
+        //プレイヤの設定
         playerPrefab = Instantiate(playerPrefab);
         playerPrefab.transform.position = playerPos;
 
@@ -144,9 +171,7 @@ public class StageGenerator : MonoBehaviour
     {
         for (int i = 0; i < ovjects.Count; ++i)
         {
-            ovjects[i] = Instantiate(ovjects[i]);
-            ovjects[i].transform.eulerAngles = Rot[i];
-            ovjects[i].transform.position = Pos[i];
+            ovjects[i] = Instantiate(ovjects[i], Pos[i], Quaternion.Euler(Rot[i]));
             if (ovjects[i].tag.Contains("Object"))
             {
                 ovjects[i].GetComponent<ObjectController>().hasItemNum = 2;

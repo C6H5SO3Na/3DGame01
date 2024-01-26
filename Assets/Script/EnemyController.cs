@@ -20,18 +20,20 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //プレイヤがやられたら、敵は停止
+        if (goal == null) { return; }
         //目標を更新
         agent.destination = goal.transform.position;
 
         if (life <= 0)
         {
-            Instantiate(itemPrefab, this.transform.position, new Quaternion());
-            Instantiate(ps, this.transform.position, new Quaternion());
+            Instantiate(itemPrefab, this.transform.position, Quaternion.identity);
+            Instantiate(ps, this.transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }
 
-        void OnCollisionEnter(Collision collision)
+    void OnCollisionEnter(Collision collision)
     {
         //弾と当たったら
         if (collision.gameObject.CompareTag("Shot"))

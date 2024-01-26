@@ -8,10 +8,12 @@ using TMPro;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Assertions.Must;
+using UnityEngine.Playables;
 
 public class PlayerController : MonoBehaviour
 {
     CharacterController controller;
+    [SerializeField] GameObject weapon;
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
@@ -29,9 +31,9 @@ public class PlayerController : MonoBehaviour
 
     public enum State
     {
-        Normal, Clear,//プレイ中とクリア時
+        Normal, Clear, Dead
     }
-    State state;
+    public static State playerState;
     // Start is called before the first frame update
     void Start()
     {
@@ -43,7 +45,8 @@ public class PlayerController : MonoBehaviour
         {
             getItemNum[i] = 0;
         }
-        state = State.Normal;
+        getItemNum[3] = 4;
+        playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
     }
@@ -52,7 +55,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (controller == null) { return; }
-        if (state == State.Normal)
+        if (playerState == State.Normal)
         {
             //プレイヤの上下左右移動
             if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
@@ -82,10 +85,9 @@ public class PlayerController : MonoBehaviour
             playerDirection.y -= Input.GetAxis("Vertical_R");
 
             //カメラの上下を制限
-            playerDirection.y = Mathf.Clamp(playerDirection.y, 0.0f, 90.0f);
+            playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
 
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
-            //Camera.main.transform.localEulerAngles;
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
 
             //カメラを回転
@@ -121,11 +123,11 @@ public class PlayerController : MonoBehaviour
                     GameObject shot = Instantiate(shotPrefab);
                     Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
                     Vector3 worldDirection = ray.direction;
-                    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 500.0f);
+                    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 800.0f);
 
                     //移動した位置から弾発射
                     shot.transform.position = Camera.main.transform.position
-                        + Camera.main.transform.forward * 8.0f + difference[i];
+                        + Camera.main.transform.forward * 6.0f + difference[i];
                 }
             }
             //マウス時代
@@ -199,6 +201,7 @@ public class PlayerController : MonoBehaviour
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
                 ++getItemNum[3];
+                weapon.GetComponent<WeaponNumManager>().SetSprite();
                 GameDirector.score += 5;
                 break;
         }
@@ -209,20 +212,12 @@ public class PlayerController : MonoBehaviour
         {
             case "Enemy":
                 Instantiate(ps, this.transform.position, Quaternion.identity);
+                playerState = State.Dead;
+                Destroy(gameObject);
                 break;
         }
     }
 
-
-        public void SetState(State s_)
-    {
-        state = s_;
-    }
-
-    public State GetState()
-    {
-        return state;
-    }
 
     bool RapidFireOperation()
     {
