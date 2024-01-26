@@ -30,7 +30,8 @@ public class EnemyController : MonoBehaviour
             Destroy(gameObject);
         }
     }
-    void OnCollisionEnter(Collision collision)
+
+        void OnCollisionEnter(Collision collision)
     {
         //’e‚Æ“–‚½‚Á‚½‚ç
         if (collision.gameObject.CompareTag("Shot"))

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 7160755004854692708}
   - component: {fileID: 6198318653207855320}
   - component: {fileID: 5050129511048455053}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpeedItem
   m_TagString: SpeedItem
   m_Icon: {fileID: 0}

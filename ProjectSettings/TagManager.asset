@@ -22,11 +22,11 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - Shot
+  - Object
+  - Enemy
+  - Item
   - 
   - 
   - 

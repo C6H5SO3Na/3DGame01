@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3322620228571305733}
   - component: {fileID: 6529494698453149896}
   - component: {fileID: 306873141136411525}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Shot
   m_TagString: Shot
   m_Icon: {fileID: 0}
@@ -117,7 +117,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}

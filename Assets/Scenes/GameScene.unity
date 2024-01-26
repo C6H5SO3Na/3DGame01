@@ -1033,9 +1033,6 @@ MonoBehaviour:
   wallPrefab: {fileID: 6365872306886928435, guid: bccbf6d015e613848b2073dafb9cef9f, type: 3}
   floorPrefab: {fileID: 3847948150139557350, guid: bccf1ef169f84444ebff83b053236e4f, type: 3}
   normalObjectPrefab: {fileID: 9107352778379897005, guid: d2c7ae7b72f9e6c4886511413a759877, type: 3}
-  normalObjectNum: 1
   hardObjectPrefab: {fileID: 1494284372230469065, guid: e7a5000d075da9444b8164977145c3f9, type: 3}
-  hardObjectNum: 1
   enemyPrefab: {fileID: 1292388576454773584, guid: 0cfb783146bdd77419540286b5a0efd0, type: 3}
-  enemyNum: 1
   playerPrefab: {fileID: 5516460302820089441, guid: dd7eece63c53f3c4b84424c45b34ad43, type: 3}

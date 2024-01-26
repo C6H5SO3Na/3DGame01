@@ -48,7 +48,7 @@ public class ShotController : MonoBehaviour
             }
             Destroy(this.gameObject);
         }
-        if (collision.gameObject.tag.Contains("Object"))
+        if (collision.gameObject.tag.Contains("Object") || collision.gameObject.tag.Contains("Enemy"))
         {
             Destroy(this.gameObject);
         }

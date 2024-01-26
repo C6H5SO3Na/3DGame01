@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
             //angle += lotateAngle;
 
             //プレイヤの視点変更
-            Debug.Log(Camera.main.transform.localEulerAngles);
+            //Debug.Log(Camera.main.transform.localEulerAngles);
 
             playerDirection.x += Input.GetAxis("Horizontal_R");
             playerDirection.y -= Input.GetAxis("Vertical_R");
@@ -125,7 +125,7 @@ public class PlayerController : MonoBehaviour
 
                     //移動した位置から弾発射
                     shot.transform.position = Camera.main.transform.position
-                        + Camera.main.transform.forward * 6.0f + difference[i];
+                        + Camera.main.transform.forward * 8.0f + difference[i];
                 }
             }
             //マウス時代
@@ -142,9 +142,9 @@ public class PlayerController : MonoBehaviour
             //}
 
             //強力弾発射
-            if (Input.GetButtonDown("Fire2") && getItemNum[0] != 0)
+            if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0)
             {
-                --getItemNum[0];
+                ++getItemNum[3];
                 GameObject shot = Instantiate(weaponPrefab);
                 Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
@@ -201,13 +201,20 @@ public class PlayerController : MonoBehaviour
                 ++getItemNum[3];
                 GameDirector.score += 5;
                 break;
+        }
+    }
+    void OnTriggerEnter(Collider hit)
+    {
+        switch (hit.gameObject.tag)
+        {
             case "Enemy":
                 Instantiate(ps, this.transform.position, Quaternion.identity);
                 break;
         }
     }
 
-    public void SetState(State s_)
+
+        public void SetState(State s_)
     {
         state = s_;
     }

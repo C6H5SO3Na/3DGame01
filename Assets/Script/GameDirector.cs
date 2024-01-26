@@ -43,7 +43,7 @@ public class GameDirector : MonoBehaviour
             Invoke("AfterGameClear", 2.0f);
             clearText.text = "Game Clear!!!";
         }
-        weaponText.text = $"Item:{PlayerController.getItemNum[0]}";
+        weaponText.text = $"Item:{PlayerController.getItemNum[3]}";
         hardObjectsText.text = $"Hard Objects:{hardObjects.Length}";
         scoreText.text = $"Score:{GetScore()}";
     }
