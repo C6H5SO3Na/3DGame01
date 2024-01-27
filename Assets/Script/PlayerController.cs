@@ -103,11 +103,12 @@ public class PlayerController : MonoBehaviour
             //着地判定
             if (controller.isGrounded)
             {
+                animator.SetBool("Jump", false);
                 //ジャンプ
                 if (Input.GetButtonDown("Jump"))
                 {
                     moveDirection.y = 5.0f;
-                    animator.SetTrigger("Jump");
+                    animator.SetBool("Jump", true);
                 }
             }
             //弾発射
@@ -128,7 +129,9 @@ public class PlayerController : MonoBehaviour
                 for (int i = 0; i < shotNum; ++i)
                 {
                     GameObject shot = Instantiate(shotPrefab);
-                    Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
+                    Ray ray = new Ray(transform.position + transform.forward * 0.5f,
+                        transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
+                    //Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
                     Vector3 worldDirection = ray.direction;
                     shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 800.0f);
 
@@ -155,7 +158,9 @@ public class PlayerController : MonoBehaviour
             {
                 ++getItemNum[3];
                 GameObject shot = Instantiate(weaponPrefab);
-                Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
+                Ray ray = new Ray(transform.position + transform.forward * 0.5f,
+                    transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
+                //Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
                 shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
 
