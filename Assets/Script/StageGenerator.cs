@@ -58,7 +58,7 @@ public class StageGenerator : MonoBehaviour
 
     //“G
     [SerializeField] GameObject enemyPrefab;
-    int[] enemyNum = { 0, 0, 1, 2, 3 };
+    int[] enemyNum = { 1, 0, 1, 2, 3 };
     List<GameObject> enemies = new List<GameObject>();
 
     //ƒvƒŒƒCƒ„

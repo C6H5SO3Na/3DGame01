@@ -18,6 +18,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
     [SerializeField] ParticleSystem ps;
+    Animator animator;
+    GameObject unityChan;
 
     float speed;
     public static int[] getItemNum = new int[4];
@@ -39,6 +41,8 @@ public class PlayerController : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         speed = 3.0f;
+        unityChan = transform.GetChild(0).gameObject;
+        animator = unityChan.GetComponent<Animator>();
 
         //アイテムの取得数初期化
         for (int i = 0; i < getItemNum.Length; ++i)
@@ -57,8 +61,9 @@ public class PlayerController : MonoBehaviour
         if (controller == null) { return; }
         if (playerState == State.Normal)
         {
+            animator.SetBool("Run", Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0);
             //プレイヤの上下左右移動
-            if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)
+            if (animator.GetBool("Run"))
             {
                 Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
                 if (inputVector.magnitude > 1.0f)
@@ -94,6 +99,7 @@ public class PlayerController : MonoBehaviour
             //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
             //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
+            if (Input.GetKeyDown(KeyCode.Z)) { }
             //着地判定
             if (controller.isGrounded)
             {
@@ -101,6 +107,7 @@ public class PlayerController : MonoBehaviour
                 if (Input.GetButtonDown("Jump"))
                 {
                     moveDirection.y = 5.0f;
+                    animator.SetTrigger("Jump");
                 }
             }
             //弾発射
@@ -160,6 +167,11 @@ public class PlayerController : MonoBehaviour
         else
         {
             moveDirection.x = moveDirection.z = 0;//プレイしていないときはxzの移動量を0にする
+            if (playerState == State.Clear)
+            {
+                animator.SetTrigger("Clear");
+                transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
+            }
         }
 
         moveDirection.y -= gravity * Time.deltaTime;
@@ -211,9 +223,8 @@ public class PlayerController : MonoBehaviour
         switch (hit.gameObject.tag)
         {
             case "Enemy":
-                Instantiate(ps, this.transform.position, Quaternion.identity);
+                animator.SetTrigger("Dead");
                 playerState = State.Dead;
-                Destroy(gameObject);
                 break;
         }
     }
