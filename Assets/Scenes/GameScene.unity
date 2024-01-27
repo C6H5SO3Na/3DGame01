@@ -183,8 +183,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Hard Objects:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
+  m_sharedMaterial: {fileID: -9166011136735937542, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -592,6 +592,56 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1047253911
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1047253912}
+  - component: {fileID: 1047253913}
+  m_Layer: 0
+  m_Name: StageGenerator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1047253912
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047253911}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.35665956, y: -7.9190435, z: 28.674171}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1047253913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1047253911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b885c6270134ce143b2c587488059723, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  wallPrefab: {fileID: 6365872306886928435, guid: bccbf6d015e613848b2073dafb9cef9f, type: 3}
+  floorPrefab: {fileID: 3847948150139557350, guid: bccf1ef169f84444ebff83b053236e4f, type: 3}
+  normalObjectPrefab: {fileID: 9107352778379897005, guid: d2c7ae7b72f9e6c4886511413a759877, type: 3}
+  hardObjectPrefab: {fileID: 1494284372230469065, guid: e7a5000d075da9444b8164977145c3f9, type: 3}
+  enemyPrefab: {fileID: 1292388576454773584, guid: 0cfb783146bdd77419540286b5a0efd0, type: 3}
+  playerPrefab: {fileID: 5516460302820089441, guid: dd7eece63c53f3c4b84424c45b34ad43, type: 3}
 --- !u!1 &1115785026
 GameObject:
   m_ObjectHideFlags: 0
@@ -652,8 +702,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'Score:'
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
+  m_sharedMaterial: {fileID: -9166011136735937542, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -838,8 +888,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: 
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
+  m_sharedMaterial: {fileID: -9166011136735937542, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -1028,7 +1078,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1899372045}
   - component: {fileID: 1899372046}
-  - component: {fileID: 1899372047}
   m_Layer: 0
   m_Name: GameDirector
   m_TagString: Untagged
@@ -1067,21 +1116,3 @@ MonoBehaviour:
   hardObjectsText: {fileID: 80690617}
   scoreText: {fileID: 1115785028}
   player: {fileID: 5516460302820089441, guid: dd7eece63c53f3c4b84424c45b34ad43, type: 3}
---- !u!114 &1899372047
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1899372044}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b885c6270134ce143b2c587488059723, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  wallPrefab: {fileID: 6365872306886928435, guid: bccbf6d015e613848b2073dafb9cef9f, type: 3}
-  floorPrefab: {fileID: 3847948150139557350, guid: bccf1ef169f84444ebff83b053236e4f, type: 3}
-  normalObjectPrefab: {fileID: 9107352778379897005, guid: d2c7ae7b72f9e6c4886511413a759877, type: 3}
-  hardObjectPrefab: {fileID: 1494284372230469065, guid: e7a5000d075da9444b8164977145c3f9, type: 3}
-  enemyPrefab: {fileID: 1292388576454773584, guid: 0cfb783146bdd77419540286b5a0efd0, type: 3}
-  playerPrefab: {fileID: 5516460302820089441, guid: dd7eece63c53f3c4b84424c45b34ad43, type: 3}
