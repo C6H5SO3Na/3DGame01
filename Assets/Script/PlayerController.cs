@@ -13,7 +13,6 @@ using UnityEngine.Playables;
 public class PlayerController : MonoBehaviour
 {
     CharacterController controller;
-    [SerializeField] GameObject weapon;
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject weaponPrefab;
     [SerializeField] float gravity;
@@ -218,7 +217,6 @@ public class PlayerController : MonoBehaviour
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
                 ++getItemNum[3];
-                weapon.GetComponent<WeaponNumManager>().SetSprite();
                 GameDirector.score += 5;
                 break;
         }

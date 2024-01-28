@@ -9,10 +9,11 @@ public class GameDirector : MonoBehaviour
 {
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI clearText;
-    //[SerializeField] TextMeshProUGUI weaponText;
+    [SerializeField] TextMeshProUGUI weaponText;
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
+    [SerializeField] Light directionalLight;
 
     public static int stage = 1;
     public static int score = 0;
@@ -47,9 +48,14 @@ public class GameDirector : MonoBehaviour
         {
             Invoke("ToNextStage", 2.0f);
         }
-        //weaponText.text = $"Item:{PlayerController.getItemNum[3]}";
-        hardObjectsText.text = $"Hard Objects:{hardObjects.Length}";
-        scoreText.text = $"Score:{GetScore()}";
+        weaponText.text = $"x {PlayerController.getItemNum[3]}";
+        hardObjectsText.text = $"x {hardObjects.Length}";
+        scoreText.text = $"スコア {GetScore()}";
+
+        //ステージ数に応じて光(太陽)の向きを変える
+        Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
+        lightAngle.x = 5 * (stage - 1);
+        directionalLight.transform.rotation = Quaternion.Euler(lightAngle);
     }
 
     void ToNextStage()

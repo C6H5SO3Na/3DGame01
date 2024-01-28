@@ -25,7 +25,6 @@ public class StageGenerator : MonoBehaviour
     int[] normalObjectNum = { 3, 4, 19, 20, 50 };
     List<GameObject> normalObjects = new List<GameObject>();
 
-    Dictionary<int, string> take;
     //List<List<Vector3>> normalObjectData = new Vector3[,]
     //{
     //    //{
@@ -156,8 +155,7 @@ public class StageGenerator : MonoBehaviour
         }
 
         //ƒvƒŒƒCƒ„‚Ìİ’è
-        playerPrefab = Instantiate(playerPrefab);
-        playerPrefab.transform.position = playerPos;
+        playerPrefab = Instantiate(playerPrefab, playerPos, Quaternion.identity);
 
     }
 
