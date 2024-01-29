@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.PlasticSCM.Editor.WebApi;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -19,6 +18,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] ParticleSystem ps;
     Animator animator;
     GameObject unityChan;
+
+    public AudioSource aud;
+    [SerializeField] AudioClip dead;
+    [SerializeField] AudioClip clear;
+    [SerializeField] AudioClip weapon;
+
+    GameDirector gameDirector;
 
     float speed;
     public static int[] getItemNum = new int[4];
@@ -39,16 +45,17 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        speed = 3.0f;
+        speed = 4.0f;
         unityChan = transform.GetChild(0).gameObject;
         animator = unityChan.GetComponent<Animator>();
+        aud = GetComponent<AudioSource>();
 
+        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
         //アイテムの取得数初期化
-        for (int i = 0; i < getItemNum.Length; ++i)
-        {
-            getItemNum[i] = 0;
-        }
-        getItemNum[3] = 4;
+        //for (int i = 0; i < getItemNum.Length; ++i)
+        //{
+        //    getItemNum[i] = 0;
+        //}
         playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -127,6 +134,7 @@ public class PlayerController : MonoBehaviour
                 //マルチショットが有効になっている場合、3つの弾を発射
                 for (int i = 0; i < shotNum; ++i)
                 {
+                    gameDirector.aud.PlayOneShot(gameDirector.shootSE);
                     GameObject shot = Instantiate(shotPrefab);
                     Ray ray = new Ray(transform.position + transform.forward * 0.5f,
                         transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
@@ -136,7 +144,8 @@ public class PlayerController : MonoBehaviour
 
                     //移動した位置から弾発射
                     shot.transform.position = Camera.main.transform.position
-                        + Camera.main.transform.forward * 6.0f + difference[i];
+                        + Camera.main.transform.forward * 7.0f + difference[i];
+
                 }
             }
             //マウス時代
@@ -155,7 +164,8 @@ public class PlayerController : MonoBehaviour
             //強力弾発射
             if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0)
             {
-                ++getItemNum[3];
+                aud.PlayOneShot(weapon);
+                --getItemNum[3];
                 GameObject shot = Instantiate(weaponPrefab);
                 Ray ray = new Ray(transform.position + transform.forward * 0.5f,
                     transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
@@ -165,7 +175,7 @@ public class PlayerController : MonoBehaviour
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 6.0f;
+                    + Camera.main.transform.forward * 7.0f;
             }
         }
         else
@@ -175,6 +185,10 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetTrigger("Clear");
                 transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
+                if (!aud.isPlaying)
+                {
+                    aud.PlayOneShot(clear);
+                }
             }
         }
 
@@ -228,6 +242,7 @@ public class PlayerController : MonoBehaviour
             case "Enemy":
                 animator.SetTrigger("Dead");
                 playerState = State.Dead;
+                aud.PlayOneShot(dead);
                 break;
         }
     }

@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Build.Content;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
@@ -14,13 +13,23 @@ public class GameDirector : MonoBehaviour
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
     [SerializeField] Light directionalLight;
+    [SerializeField] int maxStage;
+
+    public AudioClip damageSE;
+    public AudioClip shootSE;
+    public AudioClip explosionSE;
+    public AudioClip itemGetSE;
+    public AudioSource aud;
 
     public static int stage = 1;
     public static int score = 0;
+    int preScore;//コース開始時のスコア
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 60;
+        preScore = 0;
+        aud = gameObject.GetComponent<AudioSource>();
     }
 
     // Update is called once per frame
@@ -38,9 +47,12 @@ public class GameDirector : MonoBehaviour
         //硬いオブジェクトが全部なくなったらゲームクリア
         if (hardObjects.Length == 0)
         {
-            PlayerController.playerState = PlayerController.State.Clear;
-            Invoke("ToNextStage", 2.0f);
-            clearText.text = "Game Clear!!!";
+            if (PlayerController.playerState != PlayerController.State.Clear)
+            {
+                PlayerController.playerState = PlayerController.State.Clear;
+                Invoke("ToNextStage", 2.0f);
+                clearText.text = "Game Clear!!!";
+            }
         }
 
         //プレイヤがやられたら、同じコースをやり直し
@@ -63,6 +75,15 @@ public class GameDirector : MonoBehaviour
         if (PlayerController.playerState == PlayerController.State.Clear)
         {
             ++stage;
+            preScore = score;//スコアを保存
+            if (stage > maxStage)
+            {
+                SceneManager.LoadScene("EndingScene");
+            }
+        }
+        else
+        {
+            score = preScore;//やられたときは前のスコアに戻す
         }
         SceneManager.LoadScene("GameScene");
     }

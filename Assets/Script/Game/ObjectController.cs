@@ -29,10 +29,11 @@ public class ObjectController : MonoBehaviour
         {
             if (hasItemNum != 0)
             {
-                Instantiate(itemPrefab[hasItemNum], transform);
+                Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
             }
             Instantiate(ps, this.transform.position,Quaternion.identity);
             int type = 0;
+            //硬いオブジェクトだったら、硬いオブジェクト用のスコアを入れる
             if (gameObject.CompareTag("HardObject"))
             {
                 type = 1;
