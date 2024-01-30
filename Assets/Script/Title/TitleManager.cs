@@ -8,7 +8,11 @@ public class TitleManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        //クリア時にリセット
+        GameDirector.stage = 1;
+        GameDirector.score = 0;
+        GameDirector.preScore = 0;//コース開始時のスコア
+        BGMPlayer.isCreated = false;
     }
 
     // Update is called once per frame
@@ -17,12 +21,12 @@ public class TitleManager : MonoBehaviour
         if (Input.GetKey(KeyCode.Escape))
         {
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #else
         Application.Quit();
 #endif
         }
-        else if (Input.anyKey)
+        else if (Input.GetButtonDown("Fire1"))
         {
             SceneManager.LoadScene("GameScene");
         }

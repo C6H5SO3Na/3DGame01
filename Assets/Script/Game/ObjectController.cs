@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 
 public class ObjectController : MonoBehaviour
 {
-    GameObject gameDirector;
+    GameDirector gameDirector;
     [SerializeField] int life;
     [SerializeField] GameObject[] itemPrefab;
     //Rigidbody rb;
@@ -18,7 +18,7 @@ public class ObjectController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameDirector = GameObject.Find("GameDirector");
+        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
         //rb = GetComponent<Rigidbody>();
     }
 
@@ -27,6 +27,7 @@ public class ObjectController : MonoBehaviour
     {
         if (life <= 0)
         {
+            gameDirector.aud.PlayOneShot(gameDirector.explosionSE);
             if (hasItemNum != 0)
             {
                 Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
@@ -38,7 +39,7 @@ public class ObjectController : MonoBehaviour
             {
                 type = 1;
             }
-            gameDirector.GetComponent<GameDirector>().AddScore(score[type]);
+            gameDirector.AddScore(score[type]);
             Destroy(gameObject);
         }
     }
@@ -48,6 +49,11 @@ public class ObjectController : MonoBehaviour
         if (collision.gameObject.CompareTag("Shot"))
         {
             --life;
+            //”j‰ó‚³‚ê‚é‚Æ‚«‚Í–Â‚ç‚³‚È‚¢
+            if(life > 0)
+            {
+                gameDirector.aud.PlayOneShot(gameDirector.hitSE);
+            }
         }
     }
 

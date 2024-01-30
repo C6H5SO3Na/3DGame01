@@ -12,26 +12,32 @@ public class GameDirector : MonoBehaviour
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
+    [SerializeField] GameObject BGMPlayer;
     [SerializeField] Light directionalLight;
     [SerializeField] int maxStage;
-    [SerializeField] Image image;
+    [SerializeField] Image imageClear;//Game Clear!!!
 
     public AudioClip damageSE;
     public AudioClip shootSE;
     public AudioClip explosionSE;
     public AudioClip itemGetSE;
+    public AudioClip hitSE;
     public AudioSource aud;
 
     public static int stage = 1;
     public static int score = 0;
-    public static int preScore;//コース開始時のスコア
+    public static int preScore = 0;//コース開始時のスコア
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 60;
-        preScore = 0;
         aud = gameObject.GetComponent<AudioSource>();
-        image.gameObject.SetActive(false);
+        imageClear.gameObject.SetActive(false);
+        //ステージ1、すなわちゲーム開始時にBGMを再生
+        if(stage == 1)
+        {
+            Instantiate(BGMPlayer);
+        }
     }
 
     // Update is called once per frame
@@ -53,7 +59,7 @@ public class GameDirector : MonoBehaviour
             {
                 PlayerController.playerState = PlayerController.State.Clear;
                 Invoke("ToNextStage", 2.0f);
-                image.gameObject.SetActive(true);
+                imageClear.gameObject.SetActive(true);
             }
         }
 
@@ -81,6 +87,7 @@ public class GameDirector : MonoBehaviour
             if (stage > maxStage)
             {
                 SceneManager.LoadScene("EndingScene");
+                return;
             }
         }
         else

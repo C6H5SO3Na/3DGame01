@@ -19,7 +19,10 @@ public class BGMPlayer : MonoBehaviour
             Destroy(gameObject);
             return;
         }
+    }
 
+    void Update()
+    {
         if (SceneManager.GetActiveScene().name == "EndingScene")
         {
             SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());

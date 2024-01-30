@@ -21,7 +21,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         //プレイヤがやられたら、敵は停止
-        if (goal == null) { return; }
+        if (PlayerController.playerState == PlayerController.State.Dead) { return; }
         //目標を更新
         agent.destination = goal.transform.position;
 
@@ -40,5 +40,10 @@ public class EnemyController : MonoBehaviour
         {
             --life;
         }
+    }
+
+    public void SetLife(int l)
+    {
+        life = l;
     }
 }

@@ -5,10 +5,15 @@ using UnityEngine.SceneManagement;
 
 public class EndingManager : MonoBehaviour
 {
+    bool isPressed = false;
+    [SerializeField] AudioClip endingVoice;
+    [SerializeField] AudioClip buttonSE;
+    AudioSource aud;
     // Start is called before the first frame update
     void Start()
     {
-        
+        aud = GetComponent<AudioSource>();
+        aud.PlayOneShot(endingVoice);
     }
 
     // Update is called once per frame
@@ -22,9 +27,16 @@ public class EndingManager : MonoBehaviour
         Application.Quit();
 #endif
         }
-        else if (Input.anyKey)
+        else if (Input.anyKey && !isPressed)
         {
-            SceneManager.LoadScene("TitleScene");
+            aud.PlayOneShot(buttonSE);
+            Invoke("ToTitle", 2.0f);
+            isPressed = true;
         }
+    }
+
+    void ToTitle()
+    {
+        SceneManager.LoadScene("TitleScene");
     }
 }

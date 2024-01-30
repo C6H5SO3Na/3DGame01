@@ -5,14 +5,14 @@ using UnityEngine;
 
 public class ShotController : MonoBehaviour
 {
-    GameObject player;
-    Rigidbody rb;
+    GameDirector gameDirector;
+    //Rigidbody rb;
     float mainCnt = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player");
-        this.rb = GetComponent<Rigidbody>();
+        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
+        //this.rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -20,6 +20,7 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Shot"))
         {
+            //5秒経過、若しくは奈落に落ちたとき、消す
             if (mainCnt >= 5.0f || this.transform.position.y < -100.0f)
             {
                 Destroy(gameObject);
@@ -38,12 +39,18 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Weapon"))
         {
+            gameDirector.aud.PlayOneShot(gameDirector.explosionSE);
             RaycastHit[] hits = Physics.SphereCastAll(transform.position, 10.0f, Vector3.forward);
             foreach (var hit in hits)
             {
+                //周辺にいる敵とオブジェクトを破壊
                 if (hit.collider.gameObject.tag.Contains("Object"))
                 {
                     hit.collider.GetComponent<ObjectController>().SetLife(0);
+                }
+                else if(hit.collider.gameObject.tag.Contains("Enemy"))
+                {
+                    hit.collider.GetComponent<EnemyController>().SetLife(0);
                 }
             }
             Destroy(this.gameObject);

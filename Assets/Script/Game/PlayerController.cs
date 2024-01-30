@@ -27,7 +27,7 @@ public class PlayerController : MonoBehaviour
     GameDirector gameDirector;
 
     float speed;
-    public static int[] getItemNum = new int[4];
+    public static int[] getItemNum = new int[4]; //0:None 1:Speed 2:RapidFire 3:Weapon
     Vector3 moveDirection;
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     bool isRapidFire = false;
     bool isAbleMultiShot = false;
     int mainCnt = 0;
+    bool isClear = false;//クリア時のボイスを1回しか流さないようにする
 
     public enum State
     {
@@ -98,10 +99,10 @@ public class PlayerController : MonoBehaviour
             //カメラの上下を制限
             playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
 
+            //カメラを回転
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
 
-            //カメラを回転
             //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
             //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
@@ -185,9 +186,10 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetTrigger("Clear");
                 transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
-                if (!aud.isPlaying)
+                if (!isClear)
                 {
                     aud.PlayOneShot(clear);
+                    isClear = true;
                 }
             }
         }
@@ -209,6 +211,7 @@ public class PlayerController : MonoBehaviour
             case "SpeedItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[0];
                 GameDirector.score += 1;
                 speed *= 1.05f;
@@ -216,6 +219,7 @@ public class PlayerController : MonoBehaviour
             case "RapidFireItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[1];
                 GameDirector.score += 2;
                 isRapidFire = true;
@@ -223,6 +227,7 @@ public class PlayerController : MonoBehaviour
             case "MultiShotItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[2];
                 GameDirector.score += 2;
                 isAbleMultiShot = true;
@@ -230,6 +235,7 @@ public class PlayerController : MonoBehaviour
             case "WeaponItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[3];
                 GameDirector.score += 5;
                 break;
@@ -242,6 +248,7 @@ public class PlayerController : MonoBehaviour
             case "Enemy":
                 animator.SetTrigger("Dead");
                 playerState = State.Dead;
+                gameDirector.aud.PlayOneShot(gameDirector.damageSE);
                 aud.PlayOneShot(dead);
                 break;
         }

@@ -1,0 +1,5 @@
+BGM　main 魔王魂 Title 甘茶の音楽工房 Ending musmus
+SE 効果音ラボ
+背景　タイトル　https://www.ac-illust.com/main/detail.php?id=22816671
+　エンディング　https://www.ac-illust.com/main/detail.php?id=24638564
+キャラクター Unityちゃん https://unity-chan.com/ © Unity Technologies Japan/UCL
