@@ -1,19 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
 
 public class GameDirector : MonoBehaviour
 {
     GameObject[] hardObjects;
-    [SerializeField] TextMeshProUGUI clearText;
     [SerializeField] TextMeshProUGUI weaponText;
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] GameObject player;
     [SerializeField] Light directionalLight;
     [SerializeField] int maxStage;
+    [SerializeField] Image image;
 
     public AudioClip damageSE;
     public AudioClip shootSE;
@@ -23,13 +24,14 @@ public class GameDirector : MonoBehaviour
 
     public static int stage = 1;
     public static int score = 0;
-    int preScore;//コース開始時のスコア
+    public static int preScore;//コース開始時のスコア
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 60;
         preScore = 0;
         aud = gameObject.GetComponent<AudioSource>();
+        image.gameObject.SetActive(false);
     }
 
     // Update is called once per frame
@@ -51,7 +53,7 @@ public class GameDirector : MonoBehaviour
             {
                 PlayerController.playerState = PlayerController.State.Clear;
                 Invoke("ToNextStage", 2.0f);
-                clearText.text = "Game Clear!!!";
+                image.gameObject.SetActive(true);
             }
         }
 
