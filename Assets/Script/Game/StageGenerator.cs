@@ -196,7 +196,7 @@ public class StageGenerator : MonoBehaviour
 
                 normalObjectItemData = new List<int>
                 {
-                    1,1,2,1,1,1,
+                    1,0,0,2,0,0,
                 };
 
                 hardObjectData = new List<Vector3>
@@ -238,8 +238,8 @@ public class StageGenerator : MonoBehaviour
                 {
                     0,0,  0,1,
                     0,0,0,0,0,
-                      1,  1,  
-                    0,0,1,0,0,
+                      0,  0,  
+                    0,0,3,0,0,
                     0,0,  0,
                 };
 
@@ -267,7 +267,7 @@ public class StageGenerator : MonoBehaviour
 
                 normalObjectItemData = new List<int>
                 {
-                    0,0,1,0,0,0,0,0,0,0,
+                    0,0,1,0,0,0,1,0,0,0,
                 };
 
                 for (int i = 0; i < 10; ++i)
@@ -290,7 +290,7 @@ public class StageGenerator : MonoBehaviour
                 normalObjectItemData = new List<int>
                 {
                     0,0,1,0,0,0,0,0,0,0,
-                    0,0,0,0,0,0,0,0,0,0,
+                    0,0,0,0,0,0,1,0,0,0,
                 };
 
                 for (int i = 0; i < 20; ++i)

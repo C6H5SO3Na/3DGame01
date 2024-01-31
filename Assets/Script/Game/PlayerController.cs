@@ -32,8 +32,8 @@ public class PlayerController : MonoBehaviour
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
     Vector3 defaultCameraOffset;
-    bool isRapidFire = false;
-    bool isAbleMultiShot = false;
+    public static bool isRapidFire = false;
+    public static bool isAbleMultiShot = false;
     int mainCnt = 0;
     bool isClear = false;//クリア時のボイスを1回しか流さないようにする
 
@@ -52,11 +52,7 @@ public class PlayerController : MonoBehaviour
         aud = GetComponent<AudioSource>();
 
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-        //アイテムの取得数初期化
-        //for (int i = 0; i < getItemNum.Length; ++i)
-        //{
-        //    getItemNum[i] = 0;
-        //}
+
         playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -132,10 +128,11 @@ public class PlayerController : MonoBehaviour
                     Camera.main.transform.right * 0.5f,
                     Camera.main.transform.right * -0.5f
                 };
+
+                gameDirector.aud.PlayOneShot(gameDirector.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
                 //マルチショットが有効になっている場合、3つの弾を発射
                 for (int i = 0; i < shotNum; ++i)
                 {
-                    gameDirector.aud.PlayOneShot(gameDirector.shootSE);
                     GameObject shot = Instantiate(shotPrefab);
                     Ray ray = new Ray(transform.position + transform.forward * 0.5f,
                         transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
@@ -214,7 +211,7 @@ public class PlayerController : MonoBehaviour
                 gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[0];
                 GameDirector.score += 1;
-                speed *= 1.05f;
+                speed *= 1.1f;
                 break;
             case "RapidFireItem":
                 Destroy(hit.gameObject);

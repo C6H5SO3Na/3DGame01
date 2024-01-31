@@ -27,7 +27,7 @@ public class EndingManager : MonoBehaviour
         Application.Quit();
 #endif
         }
-        else if (Input.anyKey && !isPressed)
+        else if (Input.GetButtonDown("Fire1") && !isPressed)
         {
             aud.PlayOneShot(buttonSE);
             Invoke("ToTitle", 2.0f);
