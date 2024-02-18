@@ -6,6 +6,7 @@ using UnityEngine;
 public class ShotController : MonoBehaviour
 {
     GameDirector gameDirector;
+    [SerializeField] ParticleSystem explosion;
     //Rigidbody rb;
     float mainCnt = 0.0f;
     // Start is called before the first frame update
@@ -53,6 +54,8 @@ public class ShotController : MonoBehaviour
                     hit.collider.GetComponent<EnemyController>().SetLife(0);
                 }
             }
+            Instantiate(explosion, this.transform.position, Quaternion.identity);
+
             Destroy(this.gameObject);
         }
         if (collision.gameObject.tag.Contains("Object") || collision.gameObject.tag.Contains("Enemy"))

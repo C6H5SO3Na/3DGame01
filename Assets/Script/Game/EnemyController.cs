@@ -7,7 +7,7 @@ public class EnemyController : MonoBehaviour
 {
     GameObject goal;
     [SerializeField] GameObject itemPrefab;
-    [SerializeField] ParticleSystem ps;
+    [SerializeField] ParticleSystem explosion;
     [SerializeField] int life;
     NavMeshAgent agent;
     // Start is called before the first frame update
@@ -28,7 +28,7 @@ public class EnemyController : MonoBehaviour
         if (life <= 0)
         {
             Instantiate(itemPrefab, this.transform.position, Quaternion.identity);
-            Instantiate(ps, this.transform.position, Quaternion.identity);
+            Instantiate(explosion, this.transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
     }

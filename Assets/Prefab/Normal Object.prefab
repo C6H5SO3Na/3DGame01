@@ -106,7 +106,7 @@ MonoBehaviour:
   - {fileID: 6703413403559910156, guid: 8edef390ea7a0934188455f5b392b5ee, type: 3}
   - {fileID: 6703413403559910156, guid: 856fdfdd317f35f4bb564e568cb177dc, type: 3}
   - {fileID: 6703413403559910156, guid: a7e4cd7be4bd4af4aa6f160160434409, type: 3}
-  ps: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
+  explosion: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
   hasItemNum: 0
 --- !u!208 &-3424606236678407587
 NavMeshObstacle:

@@ -23,7 +23,9 @@ public class CameraRay : MonoBehaviour
 
         foreach (RaycastHit hit in rayCastHits)
         {
-            Material material = hit.collider.GetComponent<MeshRenderer>().material;
+            MeshRenderer mesh = hit.collider.GetComponent<MeshRenderer>();
+            if (mesh == null) { continue; }//åxçêñhé~
+            Material material = mesh.material;
             if (hit.collider.tag == "Wall")
             {
                 material.color = new Color(material.color.r, material.color.g, material.color.b, 0.5f);

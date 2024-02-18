@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   itemPrefab: {fileID: 6703413403559910156, guid: a7e4cd7be4bd4af4aa6f160160434409, type: 3}
-  ps: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
+  explosion: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
   life: 1
 --- !u!136 &480847581774736234
 CapsuleCollider:

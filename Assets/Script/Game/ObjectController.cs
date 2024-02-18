@@ -11,7 +11,7 @@ public class ObjectController : MonoBehaviour
     [SerializeField] int life;
     [SerializeField] GameObject[] itemPrefab;
     //Rigidbody rb;
-    [SerializeField] ParticleSystem ps;
+    [SerializeField] ParticleSystem explosion;
     int[] score = new int[] { 1, 5 };
     public int hasItemNum;
 
@@ -32,7 +32,7 @@ public class ObjectController : MonoBehaviour
             {
                 Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
             }
-            Instantiate(ps, this.transform.position,Quaternion.identity);
+            Instantiate(explosion, this.transform.position,Quaternion.identity);
             int type = 0;
             //硬いオブジェクトだったら、硬いオブジェクト用のスコアを入れる
             if (gameObject.CompareTag("HardObject"))
