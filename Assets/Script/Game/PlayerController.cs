@@ -45,7 +45,6 @@ public class PlayerController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        getItemNum[3] = 100;
         controller = GetComponent<CharacterController>();
         speed = 4.0f;
         unityChan = transform.GetChild(0).gameObject;
