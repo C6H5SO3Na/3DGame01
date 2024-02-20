@@ -11,6 +11,7 @@ public class GameDirector : MonoBehaviour
     [SerializeField] TextMeshProUGUI weaponText;
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
+    [SerializeField] TextMeshProUGUI operationText;
     [SerializeField] GameObject player;
     [SerializeField] GameObject BGMPlayer;
     [SerializeField] Light directionalLight;
@@ -71,7 +72,15 @@ public class GameDirector : MonoBehaviour
         weaponText.text = $"x {PlayerController.getItemNum[3]}";
         hardObjectsText.text = $"x {hardObjects.Length}";
         scoreText.text = $"スコア {GetScore()}";
-
+        //爆弾発射
+        if(PlayerController.getItemNum[3] > 0)
+        {
+            operationText.text = "A:ジャンプ　B:弾発射　X:爆弾発射";
+        }
+        else
+        {
+            operationText.text = "A:ジャンプ　B:弾発射";
+        }
         //ステージ数に応じて光(太陽)の向きを変える
         Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
         lightAngle.x = 5 * (stage - 1);
