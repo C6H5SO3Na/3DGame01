@@ -76,13 +76,29 @@ public class PlayerController : MonoBehaviour
                 moveDirection.x = speed * inputVector.x;
                 moveDirection.z = speed * inputVector.z;
 
-                float Dir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0, playerDirection.x + Dir, 0);
+                AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+                //走りモーションだけ、速度をアニメーションに反映
+                if (stateInfo.IsName("Run"))
+                {
+                    float Dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
+                    animator.speed = Dir / 5.0f;
+                    Debug.Log(Dir);
+                }
+                else
+                {
+                    animator.speed = 1.0f;
+                }
+
+                float normalizedDir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
+                transform.rotation = Quaternion.Euler(0, playerDirection.x + normalizedDir, 0);
             }
             else
             {
                 moveDirection.x = moveDirection.z = 0;//何も入力されていないときはxzの移動量を0にする
+                animator.speed = 1.0f;
             }
+            moveDirection.y -= gravity * Time.deltaTime;
 
             //angle += lotateAngle;
 
@@ -135,7 +151,7 @@ public class PlayerController : MonoBehaviour
                 {
                     GameObject shot = Instantiate(shotPrefab);
                     float vec;
-                    if(i == 2)
+                    if (i == 2)
                     {
                         vec = -1 * 0.5f;
                     }
@@ -144,7 +160,7 @@ public class PlayerController : MonoBehaviour
                         vec = i * 0.5f;
                     }
                     Ray ray = new Ray(transform.position + transform.forward * 0.5f,
-                        transform.forward + transform.up * 0.15f +transform.right * vec);//真ん中よりやや上をめがけて発射
+                        transform.forward + transform.up * 0.15f + transform.right * vec);//真ん中よりやや上をめがけて発射
                     //Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
                     Vector3 worldDirection = ray.direction;
                     shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 800.0f);
@@ -190,6 +206,7 @@ public class PlayerController : MonoBehaviour
             moveDirection.x = moveDirection.z = 0;//プレイしていないときはxzの移動量を0にする
             if (playerState == State.Clear)
             {
+                animator.speed = 1.0f;
                 animator.SetTrigger("Clear");
                 transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
                 if (!isClear)
@@ -200,7 +217,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        moveDirection.y -= gravity * Time.deltaTime;
+
 
         Vector3 globalDirection = Quaternion.Euler(0, playerDirection.x, 0) * moveDirection;
         controller.Move(globalDirection * Time.deltaTime);
