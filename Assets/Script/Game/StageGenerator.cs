@@ -217,7 +217,6 @@ public class StageGenerator : MonoBehaviour
                     new Vector3(-20.0f ,1.0f,10.0f),
                     new Vector3(-10.0f ,1.0f,10.0f),
                     new Vector3(  0.0f ,1.0f,10.0f),
-                    new Vector3( 10.0f ,1.0f,10.0f),
                     new Vector3( 20.0f ,1.0f,10.0f),
 
                     new Vector3(-10.0f ,1.0f, 0.0f),
@@ -232,15 +231,16 @@ public class StageGenerator : MonoBehaviour
                     new Vector3(-20.0f ,1.0f,-20.0f),
                     new Vector3(-10.0f ,1.0f,-20.0f),
                     new Vector3( 10.0f ,1.0f,-20.0f),
+                    new Vector3( 20.0f ,1.0f,-20.0f),
                 };
 
                 normalObjectItemData = new List<int>
                 {
                     0,0,  0,1,
-                    0,0,0,0,0,
+                    0,0,0,  0,
                       0,  0,  
                     0,0,3,0,0,
-                    0,0,  0,
+                    0,0,  0,0
                 };
 
 
@@ -255,7 +255,7 @@ public class StageGenerator : MonoBehaviour
                 };
                 enemyData = new List<Vector3>
                 {
-                    new Vector3( 20.0f ,1.0f,-20.0f),
+                    new Vector3( 10.0f ,1.0f, 10.0f),
                };
                 break;
 

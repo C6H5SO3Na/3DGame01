@@ -316,7 +316,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "A:\u30B8\u30E3\u30F3\u30D7\u3000B:\u5F3E\u767A\u5C04\u3000X: \u7206\u5F3E\u767A\u5C04"
+  m_text: "A:\u5F3E\u767A\u5C04\u3000B:\u30B8\u30E3\u30F3\u30D7\u3000X: \u7206\u5F3E\u767A\u5C04"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}
   m_sharedMaterial: {fileID: -9166011136735937542, guid: f8d4b871c8ddf0a49b35b225fc7326de, type: 2}

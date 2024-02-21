@@ -22,6 +22,7 @@ public class TitleManager : MonoBehaviour
 
         PlayerController.isRapidFire = false;
         PlayerController.isAbleMultiShot = false;
+        PlayerController.speed = 4.0f;
         //ƒAƒCƒeƒ€‚Ìæ“¾”‰Šú‰»
         for (int i = 0; i < PlayerController.getItemNum.Length; ++i)
         {

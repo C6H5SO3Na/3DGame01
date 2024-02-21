@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem.XR;
 using UnityEngine.Assertions.Must;
 using UnityEngine.Playables;
+using UnityEngine.Rendering;
 
 public class PlayerController : MonoBehaviour
 {
@@ -26,7 +27,7 @@ public class PlayerController : MonoBehaviour
 
     GameDirector gameDirector;
 
-    float speed;
+    public static float speed = 4.0f;
     public static int[] getItemNum = new int[4]; //0:None 1:Speed 2:RapidFire 3:Weapon
     Vector3 moveDirection;
     Vector2 playerDirection;
@@ -46,7 +47,6 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         controller = GetComponent<CharacterController>();
-        speed = 4.0f;
         unityChan = transform.GetChild(0).gameObject;
         animator = unityChan.GetComponent<Animator>();
         aud = GetComponent<AudioSource>();
@@ -134,8 +134,17 @@ public class PlayerController : MonoBehaviour
                 for (int i = 0; i < shotNum; ++i)
                 {
                     GameObject shot = Instantiate(shotPrefab);
+                    float vec;
+                    if(i == 2)
+                    {
+                        vec = -1 * 0.5f;
+                    }
+                    else
+                    {
+                        vec = i * 0.5f;
+                    }
                     Ray ray = new Ray(transform.position + transform.forward * 0.5f,
-                        transform.forward + transform.up * 0.15f);//^‚ñ’†‚æ‚è‚â‚âã‚ð‚ß‚ª‚¯‚Ä”­ŽË
+                        transform.forward + transform.up * 0.15f +transform.right * vec);//^‚ñ’†‚æ‚è‚â‚âã‚ð‚ß‚ª‚¯‚Ä”­ŽË
                     //Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//^‚ñ’†‚æ‚è‚â‚âã‚ð‚ß‚ª‚¯‚Ä”­ŽË
                     Vector3 worldDirection = ray.direction;
                     shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 800.0f);
@@ -211,7 +220,7 @@ public class PlayerController : MonoBehaviour
                 gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
                 ++getItemNum[0];
                 GameDirector.score += 1;
-                speed *= 1.1f;
+                speed *= 1.2f;
                 break;
             case "RapidFireItem":
                 Destroy(hit.gameObject);

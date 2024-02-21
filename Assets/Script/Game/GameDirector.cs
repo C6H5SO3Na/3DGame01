@@ -75,11 +75,11 @@ public class GameDirector : MonoBehaviour
         //爆弾発射
         if(PlayerController.getItemNum[3] > 0)
         {
-            operationText.text = "A:ジャンプ　B:弾発射　X:爆弾発射";
+            operationText.text = "A:弾発射　B:ジャンプ　X:爆弾発射";
         }
         else
         {
-            operationText.text = "A:ジャンプ　B:弾発射";
+            operationText.text = "A:弾発射　B:ジャンプ";
         }
         //ステージ数に応じて光(太陽)の向きを変える
         Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
