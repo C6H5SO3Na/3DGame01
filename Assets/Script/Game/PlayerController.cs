@@ -37,6 +37,7 @@ public class PlayerController : MonoBehaviour
     public static bool isAbleMultiShot = false;
     int mainCnt = 0;
     bool isClear = false;//クリア時のボイスを1回しか流さないようにする
+    bool jumpStartFlg = false;//アニメーションとの差分解消のため
 
     public enum State
     {
@@ -81,9 +82,9 @@ public class PlayerController : MonoBehaviour
                 //走りモーションだけ、速度をアニメーションに反映
                 if (stateInfo.IsName("Run"))
                 {
-                    float Dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
-                    animator.speed = Dir / 5.0f;
-                    Debug.Log(Dir);
+                    float dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
+                    animator.speed = dir / 5.0f;
+                    //Debug.Log(dir);
                 }
                 else
                 {
@@ -118,17 +119,25 @@ public class PlayerController : MonoBehaviour
             //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
             //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
-            if (Input.GetKeyDown(KeyCode.Z)) { }
             //着地判定
             if (controller.isGrounded)
             {
-                animator.SetBool("Jump", false);
+                if (!jumpStartFlg)
+                {
+                    animator.SetBool("Jump", false);
+                }
+
                 //ジャンプ
                 if (Input.GetButtonDown("Jump"))
                 {
-                    moveDirection.y = 5.0f;
+                    jumpStartFlg = true;
+                    Invoke("SetJump", .4f);
                     animator.SetBool("Jump", true);
                 }
+            }
+            else
+            {
+                jumpStartFlg = false;
             }
             //弾発射
             if (Input.GetButtonDown("Fire1") || RapidFireOperation())
@@ -281,5 +290,10 @@ public class PlayerController : MonoBehaviour
     bool RapidFireOperation()
     {
         return isRapidFire && Input.GetButton("Fire1") && mainCnt % 8 == 0;
+    }
+
+    void SetJump()
+    {
+        moveDirection.y = 5.0f;
     }
 }

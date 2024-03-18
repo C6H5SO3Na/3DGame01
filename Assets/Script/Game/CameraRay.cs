@@ -5,19 +5,24 @@ using UnityEngine;
 
 public class CameraRay : MonoBehaviour
 {
-    [SerializeField] private Transform player;
+    GameObject player;
 
     public GameObject[] prevRaycast;
     public List<GameObject> raycastHitsList = new List<GameObject>();
 
+    void Start()
+    {
+        player = GameObject.Find("Player(Clone)");
+    }
     // Update is called once per frame
     void Update()
     {
-        Vector3 difference = (player.transform.position - this.transform.position);
+        Vector3 difference = player.transform.position - this.transform.position;
         Vector3 direction = difference.normalized;
         Ray ray = new Ray(this.transform.position, direction);
         RaycastHit[] rayCastHits = Physics.RaycastAll(ray);
 
+        Debug.DrawRay(ray.origin, ray.direction);
         prevRaycast = raycastHitsList.ToArray();
         raycastHitsList.Clear();
 

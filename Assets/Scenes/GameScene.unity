@@ -852,7 +852,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bf37ae91aee1d84c881b9ebe094bf98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 3879716509385587268, guid: dd7eece63c53f3c4b84424c45b34ad43, type: 3}
   prevRaycast: []
   raycastHitsList: []
 --- !u!1 &985988714
