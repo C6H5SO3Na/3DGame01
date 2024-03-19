@@ -25,7 +25,7 @@ public class GameDirector : MonoBehaviour
     public AudioClip hitSE;
     public AudioSource aud;
 
-    public static int stage = 1;
+    public static int stage = 4;
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
     // Start is called before the first frame update
@@ -64,11 +64,6 @@ public class GameDirector : MonoBehaviour
             }
         }
 
-        //プレイヤがやられたら、同じコースをやり直し
-        if (PlayerController.playerState == PlayerController.State.Dead)
-        {
-            Invoke("ToNextStage", 2.0f);
-        }
         weaponText.text = $"x {PlayerController.getItemNum[3]}";
         hardObjectsText.text = $"x {hardObjects.Length}";
         scoreText.text = $"スコア {GetScore()}";

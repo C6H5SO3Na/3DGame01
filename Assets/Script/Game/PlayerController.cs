@@ -37,7 +37,14 @@ public class PlayerController : MonoBehaviour
     public static bool isAbleMultiShot = false;
     int mainCnt = 0;
     bool isClear = false;//クリア時のボイスを1回しか流さないようにする
-    bool jumpStartFlg = false;//アニメーションとの差分解消のため
+
+    struct Jump//アニメーションとの差分解消のため
+    {
+        public bool isStart;
+        public bool isEnd;
+    }
+
+    Jump jump;
 
     public enum State
     {
@@ -65,7 +72,7 @@ public class PlayerController : MonoBehaviour
         if (controller == null) { return; }
         if (playerState == State.Normal)
         {
-            animator.SetBool("Run", Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0);
+            animator.SetBool("Run", Input.GetAxis("Horizontal") != 0.0f || Input.GetAxis("Vertical") != 0.0f);
             //プレイヤの上下左右移動
             if (animator.GetBool("Run"))
             {
@@ -92,11 +99,11 @@ public class PlayerController : MonoBehaviour
                 }
 
                 float normalizedDir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0, playerDirection.x + normalizedDir, 0);
+                transform.rotation = Quaternion.Euler(0.0f, playerDirection.x + normalizedDir, 0.0f);
             }
             else
             {
-                moveDirection.x = moveDirection.z = 0;//何も入力されていないときはxzの移動量を0にする
+                moveDirection.x = moveDirection.z = 0.0f;//何も入力されていないときはxzの移動量を0にする
                 animator.speed = 1.0f;
             }
             moveDirection.y -= gravity * Time.deltaTime;
@@ -113,8 +120,8 @@ public class PlayerController : MonoBehaviour
             playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
 
             //カメラを回転
-            Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraDirection;
-            Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0) * defaultCameraOffset;
+            Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraDirection;
+            Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraOffset;
 
             //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
             //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
@@ -122,7 +129,7 @@ public class PlayerController : MonoBehaviour
             //着地判定
             if (controller.isGrounded)
             {
-                if (!jumpStartFlg)
+                if (!jump.isStart || jump.isEnd)
                 {
                     animator.SetBool("Jump", false);
                 }
@@ -130,14 +137,14 @@ public class PlayerController : MonoBehaviour
                 //ジャンプ
                 if (Input.GetButtonDown("Jump"))
                 {
-                    jumpStartFlg = true;
-                    Invoke("SetJump", .4f);
+                    jump.isStart = true;
+                    Invoke("SetJump", 0.4f);
                     animator.SetBool("Jump", true);
                 }
             }
             else
             {
-                jumpStartFlg = false;
+                jump.isStart = false;
             }
             //弾発射
             if (Input.GetButtonDown("Fire1") || RapidFireOperation())
@@ -280,6 +287,7 @@ public class PlayerController : MonoBehaviour
             case "Enemy":
                 animator.SetTrigger("Dead");
                 playerState = State.Dead;
+                gameDirector.Invoke("ToNextStage", 2.0f);
                 gameDirector.aud.PlayOneShot(gameDirector.damageSE);
                 aud.PlayOneShot(dead);
                 break;
@@ -294,6 +302,6 @@ public class PlayerController : MonoBehaviour
 
     void SetJump()
     {
-        moveDirection.y = 5.0f;
+        moveDirection.y = 6.0f;
     }
 }
