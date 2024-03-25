@@ -10,7 +10,6 @@ public class ObjectController : MonoBehaviour
     GameDirector gameDirector;
     [SerializeField] int life;
     [SerializeField] GameObject[] itemPrefab;
-    //Rigidbody rb;
     [SerializeField] ParticleSystem explosion;
     int[] score = new int[] { 1, 5 };
     public int hasItemNum;
@@ -19,7 +18,6 @@ public class ObjectController : MonoBehaviour
     void Start()
     {
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-        //rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
@@ -32,7 +30,7 @@ public class ObjectController : MonoBehaviour
             {
                 Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
             }
-            Instantiate(explosion, this.transform.position,Quaternion.identity);
+            Instantiate(explosion, this.transform.position, Quaternion.identity);
             int type = 0;
             //硬いオブジェクトだったら、硬いオブジェクト用のスコアを入れる
             if (gameObject.CompareTag("HardObject"))
@@ -50,10 +48,8 @@ public class ObjectController : MonoBehaviour
         {
             --life;
             //破壊されるときは鳴らさない
-            if(life > 0)
-            {
-                gameDirector.aud.PlayOneShot(gameDirector.hitSE);
-            }
+            if (life <= 0) { return; }
+            gameDirector.aud.PlayOneShot(gameDirector.hitSE);
         }
     }
 

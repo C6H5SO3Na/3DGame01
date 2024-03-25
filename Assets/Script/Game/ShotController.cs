@@ -7,30 +7,29 @@ public class ShotController : MonoBehaviour
 {
     GameDirector gameDirector;
     [SerializeField] ParticleSystem explosion;
-    //Rigidbody rb;
     float mainCnt = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
         gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-        //this.rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (gameObject.CompareTag("Shot"))
+        if (!gameObject.CompareTag("Shot")) { return; }
+        //5秒経過、若しくは奈落に落ちたとき、消す
+        if (mainCnt >= 5.0f || this.transform.position.y < -100.0f)
         {
-            //5秒経過、若しくは奈落に落ちたとき、消す
-            if (mainCnt >= 5.0f || this.transform.position.y < -100.0f)
-            {
-                Destroy(gameObject);
-            }
-            mainCnt += Time.deltaTime;
+            Destroy(gameObject);
         }
+        mainCnt += Time.deltaTime;
     }
 
-    //弾を発射
+    /// <summary>
+    ///弾を発射
+    /// </summary>
+    /// <param name="direction">方向ベクトル</param>
     public void Shoot(Vector3 direction)
     {
         GetComponent<Rigidbody>().AddForce(direction);
@@ -49,7 +48,7 @@ public class ShotController : MonoBehaviour
                 {
                     hit.collider.GetComponent<ObjectController>().SetLife(0);
                 }
-                else if(hit.collider.gameObject.tag.Contains("Enemy"))
+                else if (hit.collider.gameObject.tag.Contains("Enemy"))
                 {
                     hit.collider.GetComponent<EnemyController>().SetLife(0);
                 }

@@ -18,6 +18,8 @@ public class GameDirector : MonoBehaviour
     [SerializeField] int maxStage;
     [SerializeField] Image imageClear;//Game Clear!!!
 
+    PlayerController playerController;
+
     public AudioClip damageSE;
     public AudioClip shootSE;
     public AudioClip explosionSE;
@@ -25,7 +27,7 @@ public class GameDirector : MonoBehaviour
     public AudioClip hitSE;
     public AudioSource aud;
 
-    public static int stage = 4;
+    public static int stage = 1;
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
     // Start is called before the first frame update
@@ -33,6 +35,7 @@ public class GameDirector : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         aud = gameObject.GetComponent<AudioSource>();
+        playerController = player.GetComponent<PlayerController>();
         imageClear.gameObject.SetActive(false);
         //ステージ1、すなわちゲーム開始時にBGMを再生
         if(stage == 1)
@@ -53,12 +56,13 @@ public class GameDirector : MonoBehaviour
 #endif
         }
         hardObjects = GameObject.FindGameObjectsWithTag("HardObject");
+
         //硬いオブジェクトが全部なくなったらゲームクリア
         if (hardObjects.Length == 0)
         {
-            if (PlayerController.playerState != PlayerController.State.Clear)
+            if (playerController.playerState != PlayerController.State.Clear)
             {
-                PlayerController.playerState = PlayerController.State.Clear;
+                playerController.playerState = PlayerController.State.Clear;
                 Invoke("ToNextStage", 2.0f);
                 imageClear.gameObject.SetActive(true);
             }
@@ -82,9 +86,12 @@ public class GameDirector : MonoBehaviour
         directionalLight.transform.rotation = Quaternion.Euler(lightAngle);
     }
 
+    /// <summary>
+    /// 次のステージへ遷移
+    /// </summary>
     void ToNextStage()
     {
-        if (PlayerController.playerState == PlayerController.State.Clear)
+        if (playerController.playerState == PlayerController.State.Clear)
         {
             ++stage;
             preScore = score;//スコアを保存
@@ -101,11 +108,19 @@ public class GameDirector : MonoBehaviour
         SceneManager.LoadScene("GameScene");
     }
 
+    /// <summary>
+    /// スコアを加算
+    /// </summary>
+    /// <param name="n">加えたいスコア</param>
     public void AddScore(int n)
     {
         score += n;
     }
 
+    /// <summary>
+    /// 現在のスコアを取得
+    /// </summary>
+    /// <returns>現在のスコア</returns>
     public int GetScore()
     {
         return score;

@@ -4,15 +4,10 @@ using UnityEngine;
 
 public class ItemController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
+        //ƒAƒCƒeƒ€‚ð‰ñ“]‚³‚¹‚é
         transform.Rotate(0, 1, 0);
     }
 }

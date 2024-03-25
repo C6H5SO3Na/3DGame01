@@ -41,7 +41,7 @@ public class PlayerController : MonoBehaviour
     struct Jump//アニメーションとの差分解消のため
     {
         public bool isStart;
-        public bool isEnd;
+        //public bool isEnd;
     }
 
     Jump jump;
@@ -50,7 +50,7 @@ public class PlayerController : MonoBehaviour
     {
         Normal, Clear, Dead
     }
-    public static State playerState;
+    public State playerState;
     // Start is called before the first frame update
     void Start()
     {
@@ -106,12 +106,8 @@ public class PlayerController : MonoBehaviour
                 moveDirection.x = moveDirection.z = 0.0f;//何も入力されていないときはxzの移動量を0にする
                 animator.speed = 1.0f;
             }
-            moveDirection.y -= gravity * Time.deltaTime;
-
-            //angle += lotateAngle;
 
             //プレイヤの視点変更
-            //Debug.Log(Camera.main.transform.localEulerAngles);
 
             playerDirection.x += Input.GetAxis("Horizontal_R");
             //playerDirection.y -= Input.GetAxis("Vertical_R");
@@ -126,7 +122,7 @@ public class PlayerController : MonoBehaviour
             //着地判定
             if (controller.isGrounded)
             {
-                if (!jump.isStart || jump.isEnd)
+                if (!jump.isStart)
                 {
                     animator.SetBool("Jump", false);
                 }
@@ -141,6 +137,7 @@ public class PlayerController : MonoBehaviour
             }
             else
             {
+                moveDirection.y -= gravity * Time.deltaTime;
                 jump.isStart = false;
             }
             //弾発射
@@ -172,29 +169,18 @@ public class PlayerController : MonoBehaviour
                     {
                         vec = i * 0.5f;
                     }
-                    Ray ray = new Ray(transform.position + transform.forward * 0.5f,
-                        transform.forward + transform.up * 0.15f + transform.right * vec);//真ん中よりやや上をめがけて発射
-                    //Ray ray = Camera.main.ScreenPointToRay(new Vector2(Screen.width / 2, (float)Screen.height / 2f));//真ん中よりやや上をめがけて発射
+                    Ray ray = new Ray(transform.position + transform.forward,
+                        transform.forward * 8f + transform.right * vec);//真ん中よりやや上をめがけて発射
+                    Debug.DrawRay(ray.origin, ray.direction, Color.red);
                     Vector3 worldDirection = ray.direction;
-                    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 800.0f);
+                    shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
 
                     //移動した位置から弾発射
                     shot.transform.position = Camera.main.transform.position
-                        + Camera.main.transform.forward * 7.0f + difference[i];
+                        + Camera.main.transform.forward * 8.0f + difference[i];
+                    Debug.Log(moveDirection);
                 }
             }
-            //マウス時代
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    GameObject shot = Instantiate(shotPrefab);
-            //    Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            //    Vector3 worldDirection = ray.direction;
-            //    shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
-
-            //    //移動した位置から弾発射
-            //    shot.transform.position = Camera.main.transform.position
-            //        + Camera.main.transform.forward * 5.5f;
-            //}
 
             //強力弾発射
             if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0)
@@ -204,13 +190,12 @@ public class PlayerController : MonoBehaviour
                 GameObject shot = Instantiate(weaponPrefab);
                 Ray ray = new Ray(transform.position + transform.forward * 0.5f,
                     transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
-                //Ray ray = Camera.main.ScreenPointToRay(new Vector3(Screen.width / 2, (float)Screen.height / 1.2f, 1));//真ん中よりやや上をめがけて発射
                 Vector3 worldDirection = ray.direction;
                 shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
 
                 //移動した位置から弾発射
                 shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 7.0f;
+                    + Camera.main.transform.forward * 10.0f;
             }
         }
         else
@@ -276,26 +261,30 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
-    void OnTriggerEnter(Collider hit)
+    /// <summary>
+    /// プレイヤの死亡処理
+    /// </summary>
+    public void Dead()
     {
-        switch (hit.gameObject.tag)
-        {
-            case "Enemy":
-                animator.SetTrigger("Dead");
-                playerState = State.Dead;
-                gameDirector.Invoke("ToNextStage", 2.0f);
-                gameDirector.aud.PlayOneShot(gameDirector.damageSE);
-                aud.PlayOneShot(dead);
-                break;
-        }
+        animator.SetTrigger("Dead");
+        playerState = State.Dead;
+        gameDirector.Invoke("ToNextStage", 2.0f);
+        gameDirector.aud.PlayOneShot(gameDirector.damageSE);
+        aud.PlayOneShot(dead);
     }
 
-
+    /// <summary>
+    /// 連射の処理
+    /// </summary>
+    /// <returns>弾が発射できればtrue</returns>
     bool RapidFireOperation()
     {
         return isRapidFire && Input.GetButton("Fire1") && mainCnt % 8 == 0;
     }
 
+    /// <summary>
+    /// ジャンプの処理
+    /// </summary>
     void SetJump()
     {
         moveDirection.y = 6.0f;

@@ -21,8 +21,7 @@ public class CameraRay : MonoBehaviour
         Vector3 direction = difference.normalized;
         Ray ray = new Ray(this.transform.position, direction);
         RaycastHit[] rayCastHits = Physics.RaycastAll(ray, 7.0f);//ƒvƒŒƒCƒ„‚ª•Ç‚ÌŽè‘O‚É—ˆ‚½‚Æ‚«‚É”¼“§–¾‚É‚È‚ç‚È‚¢‚æ‚¤‚É‚·‚é
-        //Debug.Log(ray);
-        //Debug.DrawRay(ray.origin, ray.direction, Color.red);
+
         prevRaycast = raycastHitsList.ToArray();
         raycastHitsList.Clear();
 
@@ -43,7 +42,6 @@ public class CameraRay : MonoBehaviour
             if (tmpGameObject != null)
             {
                 material.color = new Color(material.color.r, material.color.g, material.color.b, 1.0f);
-                //noSampleMaterial.NotClearMaterialInvoke();
             }
         }
     }
