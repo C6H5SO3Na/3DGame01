@@ -114,17 +114,14 @@ public class PlayerController : MonoBehaviour
             //Debug.Log(Camera.main.transform.localEulerAngles);
 
             playerDirection.x += Input.GetAxis("Horizontal_R");
-            playerDirection.y -= Input.GetAxis("Vertical_R");
+            //playerDirection.y -= Input.GetAxis("Vertical_R");
 
             //カメラの上下を制限
-            playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
+            //playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
 
             //カメラを回転
             Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraDirection;
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraOffset;
-
-            //Camera.main.transform.RotateAround(transform.position, transform.up, lotateAngle.x);
-            //Camera.main.transform.RotateAround(transform.position, Camera.main.transform.right, lotateAngle.y);
 
             //着地判定
             if (controller.isGrounded)
@@ -184,7 +181,6 @@ public class PlayerController : MonoBehaviour
                     //移動した位置から弾発射
                     shot.transform.position = Camera.main.transform.position
                         + Camera.main.transform.forward * 7.0f + difference[i];
-
                 }
             }
             //マウス時代

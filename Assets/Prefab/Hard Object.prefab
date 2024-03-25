@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 7660731493932852191}
   - component: {fileID: 4772175536954241673}
   - component: {fileID: 6554036786123584256}
-  - component: {fileID: 514653583907172118}
   - component: {fileID: 3584955398119558924}
   m_Layer: 8
   m_Name: Hard Object
@@ -151,22 +150,6 @@ MonoBehaviour:
   - {fileID: 6703413403559910156, guid: a7e4cd7be4bd4af4aa6f160160434409, type: 3}
   explosion: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
   hasItemNum: 0
---- !u!208 &514653583907172118
-NavMeshObstacle:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1494284372230469065}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Shape: 1
-  m_Extents: {x: 1.3624185, y: 1.085784, z: 1.353403}
-  m_MoveThreshold: 0.1
-  m_Carve: 0
-  m_CarveOnlyStationary: 1
-  m_Center: {x: -0.13902617, y: 0.013180435, z: 0.03302574}
-  m_TimeToStationary: 0.5
 --- !u!54 &3584955398119558924
 Rigidbody:
   m_ObjectHideFlags: 0

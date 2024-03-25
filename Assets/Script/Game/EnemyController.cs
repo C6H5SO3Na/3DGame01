@@ -5,25 +5,40 @@ using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
-    GameObject goal;
+    GameObject player;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] ParticleSystem explosion;
     [SerializeField] int life;
-    NavMeshAgent agent;
+    CharacterController controller;
+    Vector3 moveVec;
+    //NavMeshAgent agent;
     // Start is called before the first frame update
     void Start()
     {
-        agent = GetComponent<NavMeshAgent>();
-        goal = GameObject.Find("Player(Clone)");
+        //agent = GetComponent<NavMeshAgent>();
+        player = GameObject.Find("Player(Clone)");
+        controller = GetComponent<CharacterController>();
+
     }
 
     // Update is called once per frame
     void Update()
     {
         //プレイヤがやられたら、敵は停止
-        if (PlayerController.playerState == PlayerController.State.Dead) { return; }
-        //目標を更新
-        agent.destination = goal.transform.position;
+        if (PlayerController.playerState == PlayerController.State.Dead)
+        {
+            moveVec = Vector3.zero;
+        }
+        else
+        {
+            Vector3 direction = player.transform.position - this.transform.position;
+            direction.y = 0;//敵が空中浮遊しないように
+            moveVec = direction.normalized * Time.deltaTime;//プレイヤを追跡
+        }
+
+        controller.Move(moveVec);
+        Debug.Log(moveVec);
+        //agent.destination = goal.transform.position;
 
         if (life <= 0)
         {
