@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] AudioClip clear;
     [SerializeField] AudioClip weapon;
 
-    GameDirector gameDirector;
+    GameManager gameManager;
 
     public static float speed = 4.0f;
     public static int[] getItemNum = new int[4]; //0:None 1:Speed 2:RapidFire 3:Weapon
@@ -38,19 +38,19 @@ public class PlayerController : MonoBehaviour
     int mainCnt = 0;
     bool isClear = false;//クリア時のボイスを1回しか流さないようにする
 
-    struct Jump//アニメーションとの差分解消のため
-    {
-        public bool isStart;
-        //public bool isEnd;
-    }
+    //struct Jump//アニメーションとの差分解消のため
+    //{
+    //    public bool isStart;
+    //    //public bool isEnd;
+    //}
 
-    Jump jump;
+    //Jump jump;
 
     public enum State
     {
         Normal, Clear, Dead
     }
-    public State playerState;
+    public static State playerState;
     // Start is called before the first frame update
     void Start()
     {
@@ -59,8 +59,7 @@ public class PlayerController : MonoBehaviour
         animator = unityChan.GetComponent<Animator>();
         aud = GetComponent<AudioSource>();
 
-        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
-
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -122,23 +121,23 @@ public class PlayerController : MonoBehaviour
             //着地判定
             if (controller.isGrounded)
             {
-                if (!jump.isStart)
-                {
-                    animator.SetBool("Jump", false);
-                }
+                //if (!jump.isStart)
+                //{
+                //    animator.SetBool("Jump", false);
+                //}
 
-                //ジャンプ
-                if (Input.GetButtonDown("Jump"))
-                {
-                    jump.isStart = true;
-                    Invoke("SetJump", 0.4f);
-                    animator.SetBool("Jump", true);
-                }
+                ////ジャンプ
+                //if (Input.GetButtonDown("Jump"))
+                //{
+                //    jump.isStart = true;
+                //    Invoke("SetJump", 0.4f);
+                //    animator.SetBool("Jump", true);
+                //}
             }
             else
             {
                 moveDirection.y -= gravity * Time.deltaTime;
-                jump.isStart = false;
+                //jump.isStart = false;
             }
             //弾発射
             if (Input.GetButtonDown("Fire1") || RapidFireOperation())
@@ -155,7 +154,7 @@ public class PlayerController : MonoBehaviour
                     Camera.main.transform.right * -0.5f
                 };
 
-                gameDirector.aud.PlayOneShot(gameDirector.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
+                gameManager.aud.PlayOneShot(gameManager.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
                 //マルチショットが有効になっている場合、3つの弾を発射
                 for (int i = 0; i < shotNum; ++i)
                 {
@@ -176,8 +175,7 @@ public class PlayerController : MonoBehaviour
                     shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
 
                     //移動した位置から弾発射
-                    shot.transform.position = Camera.main.transform.position
-                        + Camera.main.transform.forward * 8.0f + difference[i];
+                    shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f + difference[i];
                     Debug.Log(moveDirection);
                 }
             }
@@ -231,33 +229,33 @@ public class PlayerController : MonoBehaviour
             case "SpeedItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
+                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[0];
-                GameDirector.score += 1;
+                GameManager.score += 1;
                 speed *= 1.2f;
                 break;
             case "RapidFireItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
+                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[1];
-                GameDirector.score += 2;
+                GameManager.score += 2;
                 isRapidFire = true;
                 break;
             case "MultiShotItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
+                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[2];
-                GameDirector.score += 2;
+                GameManager.score += 2;
                 isAbleMultiShot = true;
                 break;
             case "WeaponItem":
                 Destroy(hit.gameObject);
                 hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameDirector.aud.PlayOneShot(gameDirector.itemGetSE);
+                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[3];
-                GameDirector.score += 5;
+                GameManager.score += 5;
                 break;
         }
     }
@@ -268,8 +266,8 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetTrigger("Dead");
         playerState = State.Dead;
-        gameDirector.Invoke("ToNextStage", 2.0f);
-        gameDirector.aud.PlayOneShot(gameDirector.damageSE);
+        gameManager.Invoke("ToNextStage", 2.0f);
+        gameManager.aud.PlayOneShot(gameManager.damageSE);
         aud.PlayOneShot(dead);
     }
 

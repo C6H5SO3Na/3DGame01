@@ -2,12 +2,17 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class TitleManager : MonoBehaviour
 {
     [SerializeField] AudioClip titleVoice;
     [SerializeField] AudioClip buttonSE;
-    bool isPressed = false;
+    [SerializeField] Image fade;
+    [SerializeField] Image pressAButton;
+    public bool isPressed = false;
+    bool hasFadein;
+    float mainCnt = 0.0f;
     AudioSource aud;
     // Start is called before the first frame update
     void Start()
@@ -15,9 +20,9 @@ public class TitleManager : MonoBehaviour
         aud = GetComponent<AudioSource>();
 
         //クリア時にリセット
-        GameDirector.stage = 1;
-        GameDirector.score = 0;
-        GameDirector.preScore = 0;//コース開始時のスコア
+        GameManager.stage = 1;
+        GameManager.score = 0;
+        GameManager.preScore = 0;//コース開始時のスコア
         BGMPlayer.isCreated = false;
 
         PlayerController.isRapidFire = false;
@@ -28,6 +33,7 @@ public class TitleManager : MonoBehaviour
         {
             PlayerController.getItemNum[i] = 0;
         }
+        mainCnt = 0.0f;
     }
 
     // Update is called once per frame
@@ -41,17 +47,40 @@ public class TitleManager : MonoBehaviour
         Application.Quit();
 #endif
         }
-        else if (Input.GetButtonDown("Fire1") && !isPressed)
+        //フェードインが終わってから操作できる
+        if (!hasFadein)
+        {
+            fade.GetComponent<Fade>().Fadein();
+            if (fade.GetComponent<Fade>().isFade) { return; }
+        }
+
+        hasFadein = true;
+        if (Input.GetButtonDown("Fire1") && !isPressed)
         {
             aud.PlayOneShot(titleVoice);
             aud.PlayOneShot(buttonSE);
-            Invoke("ToGame", 2.0f);
             isPressed = true;
+            //ボタンが押されると反応
+            pressAButton.GetComponent<PressAButtonController>().changeAmount = 8.0f;
+        }
+
+        if (isPressed)
+        {
+            ToGameScene();
         }
     }
 
-    void ToGame()
+    /// <summary>
+    /// ゲームシーンへ推移するときの処理
+    /// </summary>
+    void ToGameScene()
     {
-        SceneManager.LoadScene("GameScene");
+        mainCnt += Time.deltaTime;
+        if (mainCnt < 2.0f) { return; }
+        fade.GetComponent<Fade>().Fadeout();
+        if (!fade.GetComponent<Fade>().isFade)
+        {
+            SceneManager.LoadScene("GameScene");
+        }
     }
 }

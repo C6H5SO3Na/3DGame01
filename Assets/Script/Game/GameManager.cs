@@ -4,8 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using TMPro;
+using UnityEngine.Playables;
 
-public class GameDirector : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI weaponText;
@@ -17,8 +18,6 @@ public class GameDirector : MonoBehaviour
     [SerializeField] Light directionalLight;
     [SerializeField] int maxStage;
     [SerializeField] Image imageClear;//Game Clear!!!
-
-    PlayerController playerController;
 
     public AudioClip damageSE;
     public AudioClip shootSE;
@@ -35,7 +34,6 @@ public class GameDirector : MonoBehaviour
     {
         Application.targetFrameRate = 60;
         aud = gameObject.GetComponent<AudioSource>();
-        playerController = player.GetComponent<PlayerController>();
         imageClear.gameObject.SetActive(false);
         //ステージ1、すなわちゲーム開始時にBGMを再生
         if(stage == 1)
@@ -60,9 +58,9 @@ public class GameDirector : MonoBehaviour
         //硬いオブジェクトが全部なくなったらゲームクリア
         if (hardObjects.Length == 0)
         {
-            if (playerController.playerState != PlayerController.State.Clear)
+            if (PlayerController.playerState != PlayerController.State.Clear)
             {
-                playerController.playerState = PlayerController.State.Clear;
+                PlayerController.playerState = PlayerController.State.Clear;
                 Invoke("ToNextStage", 2.0f);
                 imageClear.gameObject.SetActive(true);
             }
@@ -74,11 +72,11 @@ public class GameDirector : MonoBehaviour
         //爆弾発射
         if(PlayerController.getItemNum[3] > 0)
         {
-            operationText.text = "A:弾発射　B:ジャンプ　X:爆弾発射";
+            operationText.text = "A:弾発射　X:爆弾発射";
         }
         else
         {
-            operationText.text = "A:弾発射　B:ジャンプ";
+            operationText.text = "A:弾発射";
         }
         //ステージ数に応じて光(太陽)の向きを変える
         Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
@@ -91,7 +89,7 @@ public class GameDirector : MonoBehaviour
     /// </summary>
     void ToNextStage()
     {
-        if (playerController.playerState == PlayerController.State.Clear)
+        if (PlayerController.playerState == PlayerController.State.Clear)
         {
             ++stage;
             preScore = score;//スコアを保存

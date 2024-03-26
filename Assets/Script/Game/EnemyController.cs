@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class EnemyController : MonoBehaviour
 {
@@ -24,7 +23,7 @@ public class EnemyController : MonoBehaviour
     void Update()
     {
         //ƒvƒŒƒCƒ„‚ª‚â‚ç‚ê‚½‚çA“G‚Í’â~
-        if (playerController.playerState == PlayerController.State.Dead)
+        if (PlayerController.playerState == PlayerController.State.Dead)
         {
             moveVec = Vector3.zero;
         }

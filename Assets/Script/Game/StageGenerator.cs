@@ -84,7 +84,7 @@ public class StageGenerator : MonoBehaviour
             for (int i = 0; i < normalObjects.Count; ++i)
             {
                 Rot[i] = Vector3.zero;
-                if (GameDirector.stage >= 4)
+                if (GameManager.stage >= 4)
                 {
                     Pos[i] = new Vector3(Random.Range(-25, 25), 1.0f, Random.Range(-25, 25));
                 }
@@ -162,7 +162,7 @@ public class StageGenerator : MonoBehaviour
     //データの定義
     void SetPrefabInfo()
     {
-        switch (GameDirector.stage)
+        switch (GameManager.stage)
         {
             case 1:
                 normalObjectData = new List<Vector3>

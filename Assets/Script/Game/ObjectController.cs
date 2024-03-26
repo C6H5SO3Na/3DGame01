@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 
 public class ObjectController : MonoBehaviour
 {
-    GameDirector gameDirector;
+    GameManager gameManager;
     [SerializeField] int life;
     [SerializeField] GameObject[] itemPrefab;
     [SerializeField] ParticleSystem explosion;
@@ -17,7 +17,7 @@ public class ObjectController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -25,7 +25,7 @@ public class ObjectController : MonoBehaviour
     {
         if (life <= 0)
         {
-            gameDirector.aud.PlayOneShot(gameDirector.explosionSE);
+            gameManager.aud.PlayOneShot(gameManager.explosionSE);
             if (hasItemNum != 0)
             {
                 Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
@@ -37,7 +37,7 @@ public class ObjectController : MonoBehaviour
             {
                 type = 1;
             }
-            gameDirector.AddScore(score[type]);
+            gameManager.AddScore(score[type]);
             Destroy(gameObject);
         }
     }
@@ -49,7 +49,7 @@ public class ObjectController : MonoBehaviour
             --life;
             //”j‰ó‚³‚ê‚é‚Æ‚«‚Í–Â‚ç‚³‚È‚¢
             if (life <= 0) { return; }
-            gameDirector.aud.PlayOneShot(gameDirector.hitSE);
+            gameManager.aud.PlayOneShot(gameManager.hitSE);
         }
     }
 

@@ -5,13 +5,13 @@ using UnityEngine;
 
 public class ShotController : MonoBehaviour
 {
-    GameDirector gameDirector;
+    GameManager gameManager;
     [SerializeField] ParticleSystem explosion;
     float mainCnt = 0.0f;
     // Start is called before the first frame update
     void Start()
     {
-        gameDirector = GameObject.Find("GameDirector").GetComponent<GameDirector>();
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame
@@ -39,7 +39,7 @@ public class ShotController : MonoBehaviour
     {
         if (gameObject.CompareTag("Weapon"))
         {
-            gameDirector.aud.PlayOneShot(gameDirector.explosionSE);
+            gameManager.aud.PlayOneShot(gameManager.explosionSE);
             RaycastHit[] hits = Physics.SphereCastAll(transform.position, 10.0f, Vector3.forward);
             foreach (var hit in hits)
             {
