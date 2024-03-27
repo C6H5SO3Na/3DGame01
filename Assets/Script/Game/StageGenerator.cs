@@ -41,7 +41,7 @@ public class StageGenerator : MonoBehaviour
 
     //ƒvƒŒƒCƒ„
     [SerializeField] GameObject playerPrefab;
-    Vector3 playerPos = new Vector3(0, 3, 0);
+    Vector3 playerPos = new Vector3(0.0f, 1.52f, 0.0f);
 
     // Start is called before the first frame update
     void Start()

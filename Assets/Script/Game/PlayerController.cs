@@ -9,6 +9,7 @@ using UnityEngine.InputSystem.XR;
 using UnityEngine.Assertions.Must;
 using UnityEngine.Playables;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -69,6 +70,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (controller == null) { return; }
+        if (GameManager.phase < 2) { return; }//ゲームが始まっていないときは動作しない
         if (playerState == State.Normal)
         {
             animator.SetBool("Run", Input.GetAxis("Horizontal") != 0.0f || Input.GetAxis("Vertical") != 0.0f);
@@ -89,12 +91,12 @@ public class PlayerController : MonoBehaviour
                 if (stateInfo.IsName("Run"))
                 {
                     float dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
-                    animator.speed = dir / 5.0f;
+                    SetAnimSpeed(dir / 5.0f);
                     //Debug.Log(dir);
                 }
                 else
                 {
-                    animator.speed = 1.0f;
+                    SetAnimSpeed(1.0f);
                 }
 
                 float normalizedDir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
@@ -103,11 +105,10 @@ public class PlayerController : MonoBehaviour
             else
             {
                 moveDirection.x = moveDirection.z = 0.0f;//何も入力されていないときはxzの移動量を0にする
-                animator.speed = 1.0f;
+                SetAnimSpeed(1.0f);
             }
 
             //プレイヤの視点変更
-
             playerDirection.x += Input.GetAxis("Horizontal_R");
             //playerDirection.y -= Input.GetAxis("Vertical_R");
 
@@ -170,13 +171,11 @@ public class PlayerController : MonoBehaviour
                     }
                     Ray ray = new Ray(transform.position + transform.forward,
                         transform.forward * 8f + transform.right * vec);//真ん中よりやや上をめがけて発射
-                    Debug.DrawRay(ray.origin, ray.direction, Color.red);
                     Vector3 worldDirection = ray.direction;
                     shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
 
                     //移動した位置から弾発射
                     shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f + difference[i];
-                    Debug.Log(moveDirection);
                 }
             }
 
@@ -192,8 +191,7 @@ public class PlayerController : MonoBehaviour
                 shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
 
                 //移動した位置から弾発射
-                shot.transform.position = Camera.main.transform.position
-                    + Camera.main.transform.forward * 10.0f;
+                shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f;
             }
         }
         else
@@ -201,7 +199,7 @@ public class PlayerController : MonoBehaviour
             moveDirection.x = moveDirection.z = 0;//プレイしていないときはxzの移動量を0にする
             if (playerState == State.Clear)
             {
-                animator.speed = 1.0f;
+                SetAnimSpeed(1.0f);
                 animator.SetTrigger("Clear");
                 transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
                 if (!isClear)
@@ -266,9 +264,10 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetTrigger("Dead");
         playerState = State.Dead;
-        gameManager.Invoke("ToNextStage", 2.0f);
+        GameManager.phase = 3;
         gameManager.aud.PlayOneShot(gameManager.damageSE);
         aud.PlayOneShot(dead);
+        Invoke("AnimStop", 2.0f);
     }
 
     /// <summary>
@@ -286,5 +285,14 @@ public class PlayerController : MonoBehaviour
     void SetJump()
     {
         moveDirection.y = 6.0f;
+    }
+
+    public void SetAnimSpeed(float n)
+    {
+        animator.speed = n;
+    }
+    public void AnimStop()
+    {
+        animator.speed = 0.0f;
     }
 }

@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 1016198305280096865}
   - component: {fileID: 5010403308760266231}
   - component: {fileID: 8649055874715356203}
-  - component: {fileID: 480847581774736234}
   - component: {fileID: 2637683712824694726}
   - component: {fileID: -6500521316008163241}
   - component: {fileID: -473904024591552608}
@@ -103,29 +102,6 @@ MonoBehaviour:
   itemPrefab: {fileID: 6703413403559910156, guid: a7e4cd7be4bd4af4aa6f160160434409, type: 3}
   explosion: {fileID: 1755813400143029249, guid: ce3c85578de1fcf498dbd825213de3e0, type: 3}
   life: 1
---- !u!136 &480847581774736234
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1292388576454773584}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 1
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Height: 2
-  m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &2637683712824694726
 Rigidbody:
   m_ObjectHideFlags: 0

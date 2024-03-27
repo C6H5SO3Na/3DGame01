@@ -13,11 +13,14 @@ public class GameManager : MonoBehaviour
     [SerializeField] TextMeshProUGUI hardObjectsText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI operationText;
+    [SerializeField] TextMeshProUGUI operationStickText;
     [SerializeField] GameObject player;
     [SerializeField] GameObject BGMPlayer;
     [SerializeField] Light directionalLight;
     [SerializeField] int maxStage;
     [SerializeField] Image imageClear;//Game Clear!!!
+    [SerializeField] Image fade;
+    [SerializeField] TextMeshProUGUI ready;
 
     public AudioClip damageSE;
     public AudioClip shootSE;
@@ -29,6 +32,8 @@ public class GameManager : MonoBehaviour
     public static int stage = 1;
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
+    public static int phase;//ゲームの段階
+
     // Start is called before the first frame update
     void Start()
     {
@@ -36,10 +41,11 @@ public class GameManager : MonoBehaviour
         aud = gameObject.GetComponent<AudioSource>();
         imageClear.gameObject.SetActive(false);
         //ステージ1、すなわちゲーム開始時にBGMを再生
-        if(stage == 1)
+        if (stage == 1)
         {
             Instantiate(BGMPlayer);
         }
+        phase = 0;
     }
 
     // Update is called once per frame
@@ -55,34 +61,72 @@ public class GameManager : MonoBehaviour
         }
         hardObjects = GameObject.FindGameObjectsWithTag("HardObject");
 
-        //硬いオブジェクトが全部なくなったらゲームクリア
-        if (hardObjects.Length == 0)
+        //段階ごとの処理
+        switch (phase)
         {
-            if (PlayerController.playerState != PlayerController.State.Clear)
-            {
-                PlayerController.playerState = PlayerController.State.Clear;
-                Invoke("ToNextStage", 2.0f);
-                imageClear.gameObject.SetActive(true);
-            }
+            case 0://フェードイン
+                operationText.text = operationStickText.text = "";
+                fade.GetComponent<Fade>().Fadein();
+                if (!fade.GetComponent<Fade>().isFade)
+                {
+                    ++phase;
+                }
+                break;
+            case 1://Ready
+                if (Input.GetButtonDown("Start"))
+                {
+                    ready.gameObject.SetActive(false);
+                    ++phase;
+                }
+                break;
+
+            case 2:
+                //硬いオブジェクトが全部なくなったらゲームクリア
+                if (hardObjects.Length == 0)
+                {
+                    PlayerController.playerState = PlayerController.State.Clear;
+                    imageClear.gameObject.SetActive(true);
+                    ++phase;
+                }
+
+                operationStickText.text = "LStick:移動　RStick:視点変更";
+                //爆弾発射
+                if (PlayerController.getItemNum[3] > 0)
+                {
+                    operationText.text = "A:弾発射　X:爆弾発射";
+                }
+                else
+                {
+                    operationText.text = "A:弾発射";
+                }
+                break;
+
+            case 3:
+                if (Input.GetButtonDown("Start"))
+                {
+                    ++phase;
+                }
+                break;
+
+            case 4:
+                fade.GetComponent<Fade>().Fadeout();
+                if (!fade.GetComponent<Fade>().isFade)
+                {
+                    ToNextStage();
+                }
+                break;
         }
 
         weaponText.text = $"x {PlayerController.getItemNum[3]}";
         hardObjectsText.text = $"x {hardObjects.Length}";
         scoreText.text = $"スコア {GetScore()}";
-        //爆弾発射
-        if(PlayerController.getItemNum[3] > 0)
-        {
-            operationText.text = "A:弾発射　X:爆弾発射";
-        }
-        else
-        {
-            operationText.text = "A:弾発射";
-        }
+
         //ステージ数に応じて光(太陽)の向きを変える
         Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
         lightAngle.x = 5 * (stage - 1);
         directionalLight.transform.rotation = Quaternion.Euler(lightAngle);
     }
+
 
     /// <summary>
     /// 次のステージへ遷移

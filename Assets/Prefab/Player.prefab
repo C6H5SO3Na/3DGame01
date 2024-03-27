@@ -107,7 +107,6 @@ MonoBehaviour:
   aud: {fileID: 4999377769911552239}
   dead: {fileID: 8300000, guid: 8b022f05317f74c7384d83d079aa4428, type: 3}
   clear: {fileID: 8300000, guid: 55cdcf6662c1e410baec7623f20689d6, type: 3}
-  shoot: {fileID: 0}
   weapon: {fileID: 8300000, guid: 460213ea8954a4e558d576a727d35c42, type: 3}
 --- !u!143 &1279890091823024142
 CharacterController:
