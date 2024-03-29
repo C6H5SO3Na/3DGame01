@@ -8,6 +8,11 @@ using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
 {
+    public enum Phase
+    {
+        FADEIN,READY,GAME,CLEAR,FADEOUT
+    }
+
     GameObject[] hardObjects;
     [SerializeField] TextMeshProUGUI weaponText;
     [SerializeField] TextMeshProUGUI hardObjectsText;
@@ -32,7 +37,9 @@ public class GameManager : MonoBehaviour
     public static int stage = 1;
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
-    public static int phase;//ゲームの段階
+    public static Phase phase;//ゲームの段階
+
+    float mainCnt = 0.0f;//秒数
 
     // Start is called before the first frame update
     void Start()
@@ -45,7 +52,7 @@ public class GameManager : MonoBehaviour
         {
             Instantiate(BGMPlayer);
         }
-        phase = 0;
+        phase = Phase.FADEIN;
     }
 
     // Update is called once per frame
@@ -64,7 +71,7 @@ public class GameManager : MonoBehaviour
         //段階ごとの処理
         switch (phase)
         {
-            case 0://フェードイン
+            case Phase.FADEIN:
                 operationText.text = operationStickText.text = "";
                 fade.GetComponent<Fade>().Fadein();
                 if (!fade.GetComponent<Fade>().isFade)
@@ -72,15 +79,17 @@ public class GameManager : MonoBehaviour
                     ++phase;
                 }
                 break;
-            case 1://Ready
-                if (Input.GetButtonDown("Start"))
+            case Phase.READY:
+                mainCnt += Time.deltaTime;
+                if (mainCnt > 1.0f)
                 {
                     ready.gameObject.SetActive(false);
                     ++phase;
+                    mainCnt = 0.0f;
                 }
                 break;
 
-            case 2:
+            case Phase.GAME:
                 //硬いオブジェクトが全部なくなったらゲームクリア
                 if (hardObjects.Length == 0)
                 {
@@ -101,14 +110,16 @@ public class GameManager : MonoBehaviour
                 }
                 break;
 
-            case 3:
-                if (Input.GetButtonDown("Start"))
+            case Phase.CLEAR:
+                mainCnt += Time.deltaTime;
+                if (mainCnt > 3.0f)
                 {
                     ++phase;
+                    mainCnt = 0.0f;
                 }
                 break;
 
-            case 4:
+            case Phase.FADEOUT:
                 fade.GetComponent<Fade>().Fadeout();
                 if (!fade.GetComponent<Fade>().isFade)
                 {

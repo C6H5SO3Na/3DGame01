@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (controller == null) { return; }
-        if (GameManager.phase < 2) { return; }//ゲームが始まっていないときは動作しない
+        if (GameManager.phase < GameManager.Phase.GAME) { return; }//ゲームが始まっていないときは動作しない
         if (playerState == State.Normal)
         {
             animator.SetBool("Run", Input.GetAxis("Horizontal") != 0.0f || Input.GetAxis("Vertical") != 0.0f);
@@ -151,8 +151,8 @@ public class PlayerController : MonoBehaviour
                 //距離
                 Vector3[] difference = {
                     Vector3.zero,
-                    Camera.main.transform.right * 0.5f,
-                    Camera.main.transform.right * -0.5f
+                    transform.right * -0.5f,
+                    transform.right * 0.5f
                 };
 
                 gameManager.aud.PlayOneShot(gameManager.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
@@ -161,15 +161,15 @@ public class PlayerController : MonoBehaviour
                 {
                     GameObject shot = Instantiate(shotPrefab);
                     float vec;
-                    if (i == 2)
+                    if(i == 2)
                     {
-                        vec = -1 * 0.5f;
+                        vec = i * 5f;
                     }
                     else
                     {
-                        vec = i * 0.5f;
+                        vec = -i * 5f;
                     }
-                    Ray ray = new Ray(transform.position + transform.forward,
+                    Ray ray = new Ray(transform.position + transform.forward * 2.0f + transform.up * 0.5f,
                         transform.forward * 8f + transform.right * vec);//真ん中よりやや上をめがけて発射
                     Vector3 worldDirection = ray.direction;
                     shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
@@ -264,10 +264,10 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetTrigger("Dead");
         playerState = State.Dead;
-        GameManager.phase = 3;
+        GameManager.phase = GameManager.Phase.CLEAR;//クリア状態としておく
         gameManager.aud.PlayOneShot(gameManager.damageSE);
         aud.PlayOneShot(dead);
-        Invoke("AnimStop", 2.0f);
+        Invoke("AnimStop", 2.0f / speed * 4.0f);//加速アイテムに対応
     }
 
     /// <summary>

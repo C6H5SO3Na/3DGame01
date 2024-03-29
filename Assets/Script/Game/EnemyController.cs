@@ -22,7 +22,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.phase != 2) { return; }
+        if(GameManager.phase != GameManager.Phase.GAME) { return; }
         //ƒvƒŒƒCƒ„‚ª‚â‚ç‚ê‚½‚çA“G‚Í’â~
         if (PlayerController.playerState == PlayerController.State.Dead)
         {
