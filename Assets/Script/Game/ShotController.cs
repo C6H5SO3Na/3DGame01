@@ -11,7 +11,7 @@ public class ShotController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager = GameObject.FindWithTag("Manager").GetComponent<GameManager>();
     }
 
     // Update is called once per frame

@@ -59,8 +59,7 @@ public class PlayerController : MonoBehaviour
         unityChan = transform.GetChild(0).gameObject;
         animator = unityChan.GetComponent<Animator>();
         aud = GetComponent<AudioSource>();
-
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        gameManager = GameObject.FindWithTag("Manager").GetComponent<GameManager>();
         playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;

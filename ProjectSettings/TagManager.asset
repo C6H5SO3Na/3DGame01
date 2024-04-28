@@ -16,6 +16,7 @@ TagManager:
   - RapidFireItem
   - MultiShotItem
   - Wall
+  - Manager
   layers:
   - Default
   - TransparentFX

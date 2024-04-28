@@ -13,9 +13,9 @@ public class GameManager : MonoBehaviour
         FADEIN,READY,GAME,CLEAR,FADEOUT
     }
 
-    GameObject[] hardObjects;
+    GameObject[] woodBoxes;
     [SerializeField] TextMeshProUGUI weaponText;
-    [SerializeField] TextMeshProUGUI hardObjectsText;
+    [SerializeField] TextMeshProUGUI woodBoxesText;
     [SerializeField] TextMeshProUGUI scoreText;
     [SerializeField] TextMeshProUGUI operationText;
     [SerializeField] TextMeshProUGUI operationStickText;
@@ -66,7 +66,7 @@ public class GameManager : MonoBehaviour
         Application.Quit();
 #endif
         }
-        hardObjects = GameObject.FindGameObjectsWithTag("HardObject");
+        woodBoxes = GameObject.FindGameObjectsWithTag("NormalObject");
 
         //段階ごとの処理
         switch (phase)
@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour
 
             case Phase.GAME:
                 //硬いオブジェクトが全部なくなったらゲームクリア
-                if (hardObjects.Length == 0)
+                if (woodBoxes.Length == 0)
                 {
                     PlayerController.playerState = PlayerController.State.Clear;
                     imageClear.gameObject.SetActive(true);
@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         }
 
         weaponText.text = $"x {PlayerController.getItemNum[3]}";
-        hardObjectsText.text = $"x {hardObjects.Length}";
+        woodBoxesText.text = $"x {woodBoxes.Length}";
         scoreText.text = $"スコア {GetScore()}";
 
         //ステージ数に応じて光(太陽)の向きを変える
