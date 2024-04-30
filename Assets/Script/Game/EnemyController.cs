@@ -5,7 +5,6 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     GameObject player;
-    PlayerController playerController;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] ParticleSystem explosion;
     [SerializeField] int life;
@@ -14,9 +13,8 @@ public class EnemyController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        player = GameObject.Find("Player(Clone)");
+        player = GameObject.FindWithTag("Player");
         controller = GetComponent<CharacterController>();
-        playerController = player.GetComponent<PlayerController>();
     }
 
     // Update is called once per frame
@@ -31,11 +29,16 @@ public class EnemyController : MonoBehaviour
         else
         {
             Vector3 direction = player.transform.position - this.transform.position;
-            direction.y = 0;//敵がプレイヤのジャンプ時に空中浮遊しないように
             moveVec = direction.normalized * Time.deltaTime;//プレイヤを追跡
+            moveVec.y = 0.0f;//敵が空中浮遊しないように
         }
 
         controller.Move(moveVec);
+
+        //y座標を矯正
+        Vector3 tmp = controller.gameObject.transform.position;
+        tmp.y = 1.0f;
+        controller.gameObject.transform.position = tmp;
 
         if (life <= 0)
         {
@@ -47,11 +50,7 @@ public class EnemyController : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //弾と当たったら
-        if (collision.gameObject.CompareTag("Shot"))
-        {
-            --life;
-        }
+
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
@@ -63,11 +62,10 @@ public class EnemyController : MonoBehaviour
     }
 
     /// <summary>
-    /// ライフを設定する
+    /// ライフを0にする
     /// </summary>
-    /// <param name="l">設定したいライフ</param>
-    public void SetLife(int l)
+    public void Dead()
     {
-        life = l;
+        life = 0;
     }
 }

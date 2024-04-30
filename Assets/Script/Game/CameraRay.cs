@@ -12,7 +12,7 @@ public class CameraRay : MonoBehaviour
 
     void Start()
     {
-        player = GameObject.Find("Player(Clone)");
+        player = GameObject.FindWithTag("Player");
     }
     // Update is called once per frame
     void Update()
@@ -25,17 +25,20 @@ public class CameraRay : MonoBehaviour
         prevRaycast = raycastHitsList.ToArray();
         raycastHitsList.Clear();
 
+        //ƒJƒƒ‰‚É‰f‚éƒIƒuƒWƒFƒNƒg‚ğ’T‚·
         foreach (RaycastHit hit in rayCastHits)
         {
             MeshRenderer mesh = hit.collider.GetComponent<MeshRenderer>();
             if (mesh == null) { continue; }//Œx–h~
             Material material = mesh.material;
-            if (hit.collider.tag == "Wall")
+            if (hit.collider.CompareTag("Wall"))
             {
                 material.color = new Color(material.color.r, material.color.g, material.color.b, 0.5f);
                 raycastHitsList.Add(hit.collider.gameObject);//hit‚µ‚½gameobject‚ğ’Ç‰Á‚·‚é
             }
         }
+
+        //•Ç‚ğ“§‰ß‚³‚¹‚é
         foreach (GameObject tmpGameObject in prevRaycast.Except<GameObject>(raycastHitsList))
         {
             Material material = tmpGameObject.GetComponent<MeshRenderer>().material;

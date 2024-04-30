@@ -8,6 +8,6 @@ public class ItemController : MonoBehaviour
     void Update()
     {
         //ƒAƒCƒeƒ€‚ð‰ñ“]‚³‚¹‚é
-        transform.Rotate(0, 1, 0);
+        transform.Rotate(0.0f, 1.0f, 0.0f);
     }
 }

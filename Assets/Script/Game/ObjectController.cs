@@ -53,8 +53,11 @@ public class ObjectController : MonoBehaviour
         }
     }
 
-    public void SetLife(int l)
+    /// <summary>
+    /// ƒ‰ƒCƒt‚ð0‚É‚·‚é
+    /// </summary>
+    public void Dead()
     {
-        life = l;
+        life = 0;
     }
 }

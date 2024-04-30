@@ -130,7 +130,7 @@ public class GameManager : MonoBehaviour
 
         weaponText.text = $"x {PlayerController.getItemNum[3]}";
         woodBoxesText.text = $"x {woodBoxes.Length}";
-        scoreText.text = $"スコア {GetScore()}";
+        scoreText.text = $"スコア {score}";
 
         //ステージ数に応じて光(太陽)の向きを変える
         Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
@@ -168,14 +168,5 @@ public class GameManager : MonoBehaviour
     public void AddScore(int n)
     {
         score += n;
-    }
-
-    /// <summary>
-    /// 現在のスコアを取得
-    /// </summary>
-    /// <returns>現在のスコア</returns>
-    public int GetScore()
-    {
-        return score;
     }
 }

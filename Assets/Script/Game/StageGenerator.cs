@@ -170,17 +170,18 @@ public class StageGenerator : MonoBehaviour
                     new Vector3(10.0f ,1.0f,10.0f),
                     new Vector3(0.0f  ,1.0f,10.0f),
                     new Vector3(-10.0f,1.0f,10.0f),
+                    new Vector3( 0.0f ,1.0f,20.0f),
                 };
 
                 normalObjectItemData = new List<int>
                 {
-                    0,0,0
+                    0,0,0,0
                 };
 
                 hardObjectData = new List<Vector3>
                 {
-                    new Vector3( 0.0f ,1.0f,20.0f),
-               };
+                    //new Vector3( 0.0f ,1.0f,20.0f),
+                };
                 break;
 
             case 2:
@@ -238,7 +239,7 @@ public class StageGenerator : MonoBehaviour
                 {
                     0,0,  0,1,
                     0,0,0,  0,
-                      0,  0,  
+                      0,  0,
                     0,0,3,0,0,
                     0,0,  0,0
                 };

@@ -119,26 +119,26 @@ public class PlayerController : MonoBehaviour
             Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraOffset;
 
             //着地判定
-            if (controller.isGrounded)
-            {
-                //if (!jump.isStart)
-                //{
-                //    animator.SetBool("Jump", false);
-                //}
+            //if (controller.isGrounded)
+            //{
+            //if (!jump.isStart)
+            //{
+            //    animator.SetBool("Jump", false);
+            //}
 
-                ////ジャンプ
-                //if (Input.GetButtonDown("Jump"))
-                //{
-                //    jump.isStart = true;
-                //    Invoke("SetJump", 0.4f);
-                //    animator.SetBool("Jump", true);
-                //}
-            }
-            else
-            {
+            ////ジャンプ
+            //if (Input.GetButtonDown("Jump"))
+            //{
+            //    jump.isStart = true;
+            //    Invoke("SetJump", 0.4f);
+            //    animator.SetBool("Jump", true);
+            //}
+            //}
+            //else
+            //{
                 moveDirection.y -= gravity * Time.deltaTime;
                 //jump.isStart = false;
-            }
+            //}
             //弾発射
             if (Input.GetButtonDown("Fire1") || RapidFireOperation())
             {

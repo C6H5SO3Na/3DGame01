@@ -18,7 +18,7 @@ public class ShotController : MonoBehaviour
     void Update()
     {
         if (!gameObject.CompareTag("Shot")) { return; }
-        //5秒経過、若しくは奈落に落ちたとき、消す
+        //定期的に消すことで処理落ち回避
         if (mainCnt >= 5.0f || this.transform.position.y < -100.0f)
         {
             Destroy(gameObject);
@@ -41,25 +41,31 @@ public class ShotController : MonoBehaviour
         {
             gameManager.aud.PlayOneShot(gameManager.explosionSE);
             RaycastHit[] hits = Physics.SphereCastAll(transform.position, 10.0f, Vector3.forward);
-            foreach (var hit in hits)
+            foreach (RaycastHit hit in hits)
             {
                 //周辺にいる敵とオブジェクトを破壊
                 if (hit.collider.gameObject.tag.Contains("Object"))
                 {
-                    hit.collider.GetComponent<ObjectController>().SetLife(0);
+                    hit.collider.GetComponent<ObjectController>().Dead();
                 }
                 else if (hit.collider.gameObject.tag.Contains("Enemy"))
                 {
-                    hit.collider.GetComponent<EnemyController>().SetLife(0);
+                    hit.collider.GetComponent<EnemyController>().Dead();
                 }
             }
             Instantiate(explosion, this.transform.position, Quaternion.identity);
 
             Destroy(this.gameObject);
         }
+
         if (collision.gameObject.tag.Contains("Object") || collision.gameObject.tag.Contains("Enemy"))
         {
             Destroy(this.gameObject);
+        }
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<EnemyController>().Dead();
         }
     }
 }
