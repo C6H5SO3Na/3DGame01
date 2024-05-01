@@ -20,7 +20,7 @@ public class EnemyController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.phase != GameManager.Phase.GAME) { return; }
+        if(GameManager.phase != GameManager.Phase.Game) { return; }
         //ƒvƒŒƒCƒ„‚ª‚â‚ç‚ê‚½‚çA“G‚Í’â~
         if (PlayerController.playerState == PlayerController.State.Dead)
         {
@@ -46,11 +46,6 @@ public class EnemyController : MonoBehaviour
             Instantiate(explosion, this.transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
-    }
-
-    void OnCollisionEnter(Collision collision)
-    {
-
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)

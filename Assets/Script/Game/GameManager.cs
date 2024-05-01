@@ -10,7 +10,7 @@ public class GameManager : MonoBehaviour
 {
     public enum Phase
     {
-        FADEIN,READY,GAME,CLEAR,FADEOUT
+        FadeIn, Ready, Game, Clear, Dead, FadeOut
     }
 
     GameObject[] woodBoxes;
@@ -52,7 +52,7 @@ public class GameManager : MonoBehaviour
         {
             Instantiate(BGMPlayer);
         }
-        phase = Phase.FADEIN;
+        phase = Phase.FadeIn;
     }
 
     // Update is called once per frame
@@ -71,7 +71,7 @@ public class GameManager : MonoBehaviour
         //段階ごとの処理
         switch (phase)
         {
-            case Phase.FADEIN:
+            case Phase.FadeIn:
                 operationText.text = operationStickText.text = "";
                 fade.GetComponent<Fade>().Fadein();
                 if (!fade.GetComponent<Fade>().isFade)
@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
                     ++phase;
                 }
                 break;
-            case Phase.READY:
+            case Phase.Ready:
                 mainCnt += Time.deltaTime;
                 if (mainCnt > 1.0f)
                 {
@@ -89,7 +89,7 @@ public class GameManager : MonoBehaviour
                 }
                 break;
 
-            case Phase.GAME:
+            case Phase.Game:
                 //硬いオブジェクトが全部なくなったらゲームクリア
                 if (woodBoxes.Length == 0)
                 {
@@ -110,16 +110,17 @@ public class GameManager : MonoBehaviour
                 }
                 break;
 
-            case Phase.CLEAR:
+            case Phase.Clear:
+            case Phase.Dead:
                 mainCnt += Time.deltaTime;
                 if (mainCnt > 3.0f)
                 {
-                    ++phase;
+                    phase = Phase.FadeOut;
                     mainCnt = 0.0f;
                 }
                 break;
 
-            case Phase.FADEOUT:
+            case Phase.FadeOut:
                 fade.GetComponent<Fade>().Fadeout();
                 if (!fade.GetComponent<Fade>().isFade)
                 {

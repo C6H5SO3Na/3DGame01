@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     Vector3 defaultCameraOffset;
     public static bool isRapidFire = false;
     public static bool isAbleMultiShot = false;
+    bool isAbleShot = true;//弾が発射できるか(壁際で発射できないようにする)
     int mainCnt = 0;
     bool isClear = false;//クリア時のボイスを1回しか流さないようにする
 
@@ -69,7 +70,7 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         if (controller == null) { return; }
-        if (GameManager.phase < GameManager.Phase.GAME) { return; }//ゲームが始まっていないときは動作しない
+        if (GameManager.phase < GameManager.Phase.Game) { return; }//ゲームが始まっていないときは動作しない
         if (playerState == State.Normal)
         {
             animator.SetBool("Run", Input.GetAxis("Horizontal") != 0.0f || Input.GetAxis("Vertical") != 0.0f);
@@ -140,7 +141,7 @@ public class PlayerController : MonoBehaviour
                 //jump.isStart = false;
             //}
             //弾発射
-            if (Input.GetButtonDown("Fire1") || RapidFireOperation())
+            if ((Input.GetButtonDown("Fire1") || RapidFireOperation()) && isAbleShot)
             {
                 int shotNum = 1;
                 if (isAbleMultiShot)
@@ -179,7 +180,7 @@ public class PlayerController : MonoBehaviour
             }
 
             //強力弾発射
-            if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0)
+            if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0 && isAbleShot)
             {
                 aud.PlayOneShot(weapon);
                 --getItemNum[3];
@@ -195,12 +196,12 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            moveDirection.x = moveDirection.z = 0;//プレイしていないときはxzの移動量を0にする
+            moveDirection.x = moveDirection.z = 0.0f;//プレイしていないときはxzの移動量を0にする
             if (playerState == State.Clear)
             {
                 SetAnimSpeed(1.0f);
                 animator.SetTrigger("Clear");
-                transform.rotation = Quaternion.Euler(0, playerDirection.x + 180.0f, 0);
+                transform.rotation = Quaternion.Euler(0.0f, playerDirection.x + 180.0f, 0.0f);
                 if (!isClear)
                 {
                     aud.PlayOneShot(clear);
@@ -211,7 +212,7 @@ public class PlayerController : MonoBehaviour
 
 
 
-        Vector3 globalDirection = Quaternion.Euler(0, playerDirection.x, 0) * moveDirection;
+        Vector3 globalDirection = Quaternion.Euler(0.0f, playerDirection.x, 0.0f) * moveDirection;
         controller.Move(globalDirection * Time.deltaTime);
         //moveDirection = Vector3.zero;
         //charaCon.Move(moveDirection * Time.deltaTime);
@@ -221,39 +222,49 @@ public class PlayerController : MonoBehaviour
 
     void OnControllerColliderHit(ControllerColliderHit hit)
     {
+        //アイテムの判定を行う
+        if (!hit.gameObject.tag.Contains("Item")) { return; }
+
+        Destroy(hit.gameObject);
+        gameManager.aud.PlayOneShot(gameManager.itemGetSE);
+
         switch (hit.gameObject.tag)
         {
             case "SpeedItem":
-                Destroy(hit.gameObject);
-                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[0];
                 GameManager.score += 1;
                 speed *= 1.2f;
                 break;
             case "RapidFireItem":
-                Destroy(hit.gameObject);
-                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[1];
                 GameManager.score += 2;
                 isRapidFire = true;
                 break;
             case "MultiShotItem":
-                Destroy(hit.gameObject);
-                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[2];
                 GameManager.score += 2;
                 isAbleMultiShot = true;
                 break;
             case "WeaponItem":
-                Destroy(hit.gameObject);
-                hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
-                gameManager.aud.PlayOneShot(gameManager.itemGetSE);
                 ++getItemNum[3];
                 GameManager.score += 5;
                 break;
+        }
+        hit.gameObject.tag = "Destroyed";//もう一回この関数が呼び出されるためタグを変更して呼び出しを回避
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.CompareTag("Wall"))
+        {
+            isAbleShot = false;
+        }
+    }
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.CompareTag("Wall"))
+        {
+            isAbleShot = true;
         }
     }
     /// <summary>
@@ -263,7 +274,7 @@ public class PlayerController : MonoBehaviour
     {
         animator.SetTrigger("Dead");
         playerState = State.Dead;
-        GameManager.phase = GameManager.Phase.CLEAR;//クリア状態としておく
+        GameManager.phase = GameManager.Phase.Dead;
         gameManager.aud.PlayOneShot(gameManager.damageSE);
         aud.PlayOneShot(dead);
         Invoke("AnimStop", 2.0f / speed * 4.0f);//加速アイテムに対応
@@ -281,10 +292,10 @@ public class PlayerController : MonoBehaviour
     /// <summary>
     /// ジャンプの処理
     /// </summary>
-    void SetJump()
-    {
-        moveDirection.y = 6.0f;
-    }
+    //void SetJump()
+    //{
+    //    moveDirection.y = 6.0f;
+    //}
 
     public void SetAnimSpeed(float n)
     {
