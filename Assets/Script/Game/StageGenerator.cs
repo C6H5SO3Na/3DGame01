@@ -5,13 +5,6 @@ using UnityEngine.Rendering;
 
 public class StageGenerator : MonoBehaviour
 {
-    //struct Prefab
-    //{
-    //    public GameObject ovject;//object
-    //    List<GameObject> ovjects;
-    //}
-    //Prefab[] walls = new Prefab[4];
-
     //壁
     [SerializeField] GameObject wallPrefab;
     List<GameObject> walls = new List<GameObject>();
@@ -95,13 +88,6 @@ public class StageGenerator : MonoBehaviour
             }
             SetPrefab(normalObjects, Rot, Pos);
         }
-        //for (int i = 0; i < normalObjects.Length; ++i)
-        //{
-        //    normalObjects[i] = Instantiate(normalObjectPrefab);
-        //    normalObjects[i].transform.eulerAngles = new Vector3();
-        //    normalObjects[i].transform.position = new Vector3(Random.Range(-25, 25), 1.0f, Random.Range(-25, 25));
-        //    normalObjects[i].GetComponent<ObjectController>().hasItem = (i % 3 == 0);
-        //}
 
         //硬いオブジェクトの設定
         {
@@ -118,12 +104,6 @@ public class StageGenerator : MonoBehaviour
             }
             SetPrefab(hardObjects, Rot, Pos);
         }
-        //for (int i = 0; i < hardObjects.Length; ++i)
-        //{
-        //    hardObjects[i] = Instantiate(hardObjectPrefab);
-        //    hardObjects[i].transform.eulerAngles = new Vector3();
-        //    hardObjects[i].transform.position = new Vector3(Random.Range(-25, 25), 1.0f, Random.Range(-25, 25));
-        //}
 
         //敵の設定
         {
@@ -187,23 +167,35 @@ public class StageGenerator : MonoBehaviour
             case 2:
                 normalObjectData = new List<Vector3>
                 {
-                    new Vector3(10.0f ,1.0f,10.0f),
-                    new Vector3(20.0f ,1.0f,0.0f ),
-                    new Vector3(10.0f ,1.0f,-10.0f),
+                    new Vector3(-20.0f ,1.0f,20.0f),
+                    new Vector3(-10.0f ,1.0f,20.0f),
+                    new Vector3(  0.0f ,1.0f,20.0f),
+                    new Vector3( 10.0f ,1.0f,20.0f),
+                    new Vector3( 20.0f ,1.0f,20.0f),
+
+                    new Vector3(-20.0f ,1.0f,10.0f),
                     new Vector3(-10.0f ,1.0f,10.0f),
-                    new Vector3(-20.0f ,1.0f,0.0f ),
-                    new Vector3(-10.0f ,1.0f,-10.0f),
+                    new Vector3(  0.0f ,1.0f,10.0f),
+                    new Vector3( 10.0f ,1.0f,10.0f),
+                    new Vector3( 20.0f ,1.0f,10.0f),
+
+                    new Vector3(-20.0f ,1.0f, 0.0f),
+                    new Vector3(-10.0f ,1.0f, 0.0f),
+                    new Vector3( 10.0f ,1.0f, 0.0f),
+                    new Vector3( 20.0f ,1.0f, 0.0f),
                 };
 
                 normalObjectItemData = new List<int>
                 {
-                    1,4,0,2,0,0,
+                    0,2,0,0,1,
+                    0,0,4,0,0,
+                    0,0,  0,0,
                 };
 
                 hardObjectData = new List<Vector3>
                 {
-                    new Vector3( 0.0f ,1.0f,20.0f),
-                    new Vector3( 0.0f ,1.0f,-20.0f),
+                    //new Vector3( 0.0f ,1.0f,20.0f),
+                    //new Vector3( 0.0f ,1.0f,-20.0f),
                 };
                 break;
 

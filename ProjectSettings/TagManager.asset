@@ -17,6 +17,7 @@ TagManager:
   - MultiShotItem
   - Wall
   - Manager
+  - SEPlayer
   layers:
   - Default
   - TransparentFX

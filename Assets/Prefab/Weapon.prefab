@@ -177,7 +177,7 @@ GameObject:
   - component: {fileID: 7696561617290412429}
   - component: {fileID: -2790742125449924062}
   - component: {fileID: 3427690199448703022}
-  - component: {fileID: -1879954173705765854}
+  - component: {fileID: -8739976413660288134}
   m_Layer: 7
   m_Name: Weapon
   m_TagString: Weapon
@@ -250,7 +250,7 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &-1879954173705765854
+--- !u!114 &-8739976413660288134
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -259,7 +259,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2404615843220717850}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7712244addbf4794f83a49389deed683, type: 3}
+  m_Script: {fileID: 11500000, guid: 7a1d8d243786d974e9042cc36ebfde4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   explosion: {fileID: 1755813400143029249, guid: 9989703045f2228498014503edfe61aa, type: 3}

@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using TMPro;
 using UnityEngine.Playables;
 
 public class GameManager : MonoBehaviour
@@ -13,46 +12,32 @@ public class GameManager : MonoBehaviour
         FadeIn, Ready, Game, Clear, Dead, FadeOut
     }
 
-    GameObject[] woodBoxes;
-    [SerializeField] TextMeshProUGUI weaponText;
-    [SerializeField] TextMeshProUGUI woodBoxesText;
-    [SerializeField] TextMeshProUGUI scoreText;
-    [SerializeField] TextMeshProUGUI operationText;
-    [SerializeField] TextMeshProUGUI operationStickText;
+    UIManager UIManager;
+    [SerializeField] GameObject ui;
     [SerializeField] GameObject player;
     [SerializeField] GameObject BGMPlayer;
     [SerializeField] Light directionalLight;
     [SerializeField] int maxStage;
-    [SerializeField] Image imageClear;//Game Clear!!!
     [SerializeField] Image fade;
-    [SerializeField] TextMeshProUGUI ready;
-
-    public AudioClip damageSE;
-    public AudioClip shootSE;
-    public AudioClip explosionSE;
-    public AudioClip itemGetSE;
-    public AudioClip hitSE;
-    public AudioSource aud;
 
     public static int stage = 1;
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
     public static Phase phase;//ゲームの段階
 
-    float mainCnt = 0.0f;//秒数
+    float minCnt = 0.0f;//秒数
 
     // Start is called before the first frame update
     void Start()
     {
         Application.targetFrameRate = 60;
-        aud = gameObject.GetComponent<AudioSource>();
-        imageClear.gameObject.SetActive(false);
         //ステージ1、すなわちゲーム開始時にBGMを再生
         if (stage == 1)
         {
             Instantiate(BGMPlayer);
         }
         phase = Phase.FadeIn;
+        UIManager = ui.GetComponent<UIManager>();
     }
 
     // Update is called once per frame
@@ -66,86 +51,106 @@ public class GameManager : MonoBehaviour
         Application.Quit();
 #endif
         }
-        woodBoxes = GameObject.FindGameObjectsWithTag("NormalObject");
 
         //段階ごとの処理
         switch (phase)
         {
             case Phase.FadeIn:
-                operationText.text = operationStickText.text = "";
-                fade.GetComponent<Fade>().Fadein();
-                if (!fade.GetComponent<Fade>().isFade)
-                {
-                    ++phase;
-                }
+                FadeIn();
                 break;
+
             case Phase.Ready:
-                mainCnt += Time.deltaTime;
-                if (mainCnt > 1.0f)
-                {
-                    ready.gameObject.SetActive(false);
-                    ++phase;
-                    mainCnt = 0.0f;
-                }
+                Ready();
                 break;
 
             case Phase.Game:
-                //硬いオブジェクトが全部なくなったらゲームクリア
-                if (woodBoxes.Length == 0)
-                {
-                    PlayerController.playerState = PlayerController.State.Clear;
-                    imageClear.gameObject.SetActive(true);
-                    ++phase;
-                }
-
-                operationStickText.text = "LStick:移動　RStick:視点変更";
-                //爆弾発射
-                if (PlayerController.getItemNum[3] > 0)
-                {
-                    operationText.text = "A:弾発射　X:爆弾発射";
-                }
-                else
-                {
-                    operationText.text = "A:弾発射";
-                }
+                Game();
                 break;
 
             case Phase.Clear:
-            case Phase.Dead:
-                mainCnt += Time.deltaTime;
-                if (mainCnt > 3.0f)
-                {
-                    phase = Phase.FadeOut;
-                    mainCnt = 0.0f;
-                }
+            case Phase.Dead://共通の処理
+                StageEnd();
                 break;
 
             case Phase.FadeOut:
-                fade.GetComponent<Fade>().Fadeout();
-                if (!fade.GetComponent<Fade>().isFade)
-                {
-                    ToNextStage();
-                }
+                FadeOut();
                 break;
         }
-
-        weaponText.text = $"x {PlayerController.getItemNum[3]}";
-        woodBoxesText.text = $"x {woodBoxes.Length}";
-        scoreText.text = $"スコア {score}";
-
-        //ステージ数に応じて光(太陽)の向きを変える
-        Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
-        lightAngle.x = 5 * (stage - 1);
-        directionalLight.transform.rotation = Quaternion.Euler(lightAngle);
     }
 
+    /// <summary>
+    /// フェードイン時の処理
+    /// </summary>
+    void FadeIn()
+    {
+        //ステージ数に応じて光(太陽)の向きを変える
+        LightAngleOperation();
+        fade.GetComponent<Fade>().Fadein();
+        if (!fade.GetComponent<Fade>().isFade)
+        {
+            ++phase;
+        }
+    }
+
+    /// <summary>
+    /// 「Ready」が表示されている際の処理
+    /// </summary>
+    void Ready()
+    {
+        minCnt += Time.deltaTime;
+        if (minCnt > 1.0f)
+        {
+            UIManager.HideReadyImage();
+            ++phase;
+            minCnt = 0.0f;
+        }
+    }
+
+    /// <summary>
+    /// ゲーム本編の処理
+    /// </summary>
+    void Game()
+    {
+        //硬いオブジェクトが全部なくなったらゲームクリア
+        if (GetWoodBoxNum() == 0)
+        {
+            PlayerController.playerState = PlayerController.State.Clear;
+            UIManager.ShowClearImage();
+            ++phase;
+        }
+    }
+
+    /// <summary>
+    ///ステージ終了時(クリア・死亡共通)の処理
+    /// </summary>
+    void StageEnd()
+    {
+        minCnt += Time.deltaTime;
+        if (minCnt > 3.0f)
+        {
+            phase = Phase.FadeOut;
+            minCnt = 0.0f;
+        }
+    }
+
+    /// <summary>
+    /// フェードアウト時の処理
+    /// </summary>
+    void FadeOut()
+    {
+        fade.GetComponent<Fade>().Fadeout();
+        if (!fade.GetComponent<Fade>().isFade)
+        {
+            ToNextStage();
+        }
+    }
 
     /// <summary>
     /// 次のステージへ遷移
     /// </summary>
     void ToNextStage()
     {
-        if (PlayerController.playerState == PlayerController.State.Clear)
+        if (PlayerController.playerState == PlayerController.State.AfterClear)
         {
             ++stage;
             preScore = score;//スコアを保存
@@ -163,11 +168,30 @@ public class GameManager : MonoBehaviour
     }
 
     /// <summary>
+    /// 太陽風の光をステージ毎に変える
+    /// </summary>
+    void LightAngleOperation()
+    {
+        Vector3 lightAngle = directionalLight.transform.rotation.eulerAngles;
+        lightAngle.x = 5 * (stage - 1);
+        directionalLight.transform.rotation = Quaternion.Euler(lightAngle);
+    }
+
+    /// <summary>
     /// スコアを加算
     /// </summary>
     /// <param name="n">加えたいスコア</param>
     public void AddScore(int n)
     {
         score += n;
+    }
+
+    /// <summary>
+    /// 木箱の残り数を取得
+    /// </summary>
+    /// <returns>木箱の残り数</returns>
+    public int GetWoodBoxNum()
+    {
+        return GameObject.FindGameObjectsWithTag("NormalObject").Length;
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class EnemyController : MonoBehaviour
 {
     GameObject player;
+    SEPlayer sePlayer;
     [SerializeField] GameObject itemPrefab;
     [SerializeField] ParticleSystem explosion;
     [SerializeField] int life;
@@ -14,13 +15,15 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         player = GameObject.FindWithTag("Player");
+        sePlayer = GameObject.FindWithTag("SEPlayer").GetComponent<SEPlayer>();
         controller = GetComponent<CharacterController>();
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(GameManager.phase != GameManager.Phase.Game) { return; }
+        //ゲーム本編以外は停止
+        if (GameManager.phase != GameManager.Phase.Game) { return; }
         //プレイヤがやられたら、敵は停止
         if (PlayerController.playerState == PlayerController.State.Dead)
         {
@@ -30,10 +33,9 @@ public class EnemyController : MonoBehaviour
         {
             Vector3 direction = player.transform.position - this.transform.position;
             moveVec = direction.normalized * Time.deltaTime;//プレイヤを追跡
-            moveVec.y = 0.0f;//敵が空中浮遊しないように
+            controller.Move(moveVec);
         }
 
-        controller.Move(moveVec);
 
         //y座標を矯正
         Vector3 tmp = controller.gameObject.transform.position;
@@ -42,9 +44,7 @@ public class EnemyController : MonoBehaviour
 
         if (life <= 0)
         {
-            Instantiate(itemPrefab, this.transform.position, Quaternion.identity);
-            Instantiate(explosion, this.transform.position, Quaternion.identity);
-            Destroy(gameObject);
+            Dead();
         }
     }
 
@@ -57,10 +57,13 @@ public class EnemyController : MonoBehaviour
     }
 
     /// <summary>
-    /// ライフを0にする
+    /// 死亡処理
     /// </summary>
     public void Dead()
     {
-        life = 0;
+        sePlayer.aud.PlayOneShot(sePlayer.explosionSE);
+        Instantiate(itemPrefab, this.transform.position, Quaternion.identity);
+        Instantiate(explosion, this.transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 }

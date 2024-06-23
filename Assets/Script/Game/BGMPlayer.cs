@@ -9,6 +9,7 @@ public class BGMPlayer : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
+        //1つしか生成されないようにする
         if (!isCreated)
         {
             DontDestroyOnLoad(gameObject);
@@ -23,6 +24,7 @@ public class BGMPlayer : MonoBehaviour
 
     void Update()
     {
+        //エンディング画面に推移時に削除
         if (SceneManager.GetActiveScene().name == "EndingScene")
         {
             SceneManager.MoveGameObjectToScene(gameObject, SceneManager.GetActiveScene());

@@ -8,6 +8,7 @@ using UnityEngine.Rendering;
 public class ObjectController : MonoBehaviour
 {
     GameManager gameManager;
+    SEPlayer sePlayer;
     [SerializeField] int life;
     [SerializeField] GameObject[] itemPrefab;
     [SerializeField] ParticleSystem explosion;
@@ -18,46 +19,42 @@ public class ObjectController : MonoBehaviour
     void Start()
     {
         gameManager = GameObject.FindWithTag("Manager").GetComponent<GameManager>();
+        sePlayer = GameObject.FindWithTag("SEPlayer").GetComponent<SEPlayer>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (life <= 0)
-        {
-            gameManager.aud.PlayOneShot(gameManager.explosionSE);
-            if (hasItemNum != 0)
-            {
-                Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
-            }
-            Instantiate(explosion, this.transform.position, Quaternion.identity);
-            int type = 0;
-            //硬いオブジェクトだったら、硬いオブジェクト用のスコアを入れる
-            if (gameObject.CompareTag("HardObject"))
-            {
-                type = 1;
-            }
-            gameManager.AddScore(score[type]);
-            Destroy(gameObject);
-        }
-    }
     void OnCollisionEnter(Collision collision)
     {
-        //弾と当たったら
         if (collision.gameObject.CompareTag("Shot"))
         {
             --life;
-            //破壊されるときは鳴らさない
-            if (life <= 0) { return; }
-            gameManager.aud.PlayOneShot(gameManager.hitSE);
+            //破壊されるときはヒット音を鳴らさない
+            if (life <= 0) {
+                Dead();
+                collision.gameObject.tag = "Destroyed";
+                return;
+            }
+            sePlayer.aud.PlayOneShot(sePlayer.hitSE);
         }
     }
 
     /// <summary>
-    /// ライフを0にする
+    /// 死亡させる
     /// </summary>
     public void Dead()
     {
-        life = 0;
+        sePlayer.aud.PlayOneShot(sePlayer.explosionSE);
+        if (hasItemNum != 0)
+        {
+            Instantiate(itemPrefab[hasItemNum - 1], this.transform.position, Quaternion.identity);
+        }
+        Instantiate(explosion, this.transform.position, Quaternion.identity);
+        int type = 0;
+        //硬いオブジェクトだったら、硬いオブジェクト用のスコアを入れる
+        if (gameObject.CompareTag("HardObject"))
+        {
+            type = 1;
+        }
+        gameManager.AddScore(score[type]);
+        Destroy(gameObject);
     }
 }

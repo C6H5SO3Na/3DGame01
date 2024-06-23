@@ -14,43 +14,46 @@ using UnityEngine.UI;
 public class PlayerController : MonoBehaviour
 {
     CharacterController controller;
+
+    //弾
     [SerializeField] GameObject shotPrefab;
     [SerializeField] GameObject weaponPrefab;
+
+    //重力
     [SerializeField] float gravity;
+
+    //爆発エフェクト
     [SerializeField] ParticleSystem ps;
+
     Animator animator;
     GameObject unityChan;
 
+    //サウンド
     public AudioSource aud;
     [SerializeField] AudioClip dead;
     [SerializeField] AudioClip clear;
     [SerializeField] AudioClip weapon;
 
-    GameManager gameManager;
+    SEPlayer sePlayer;
 
+    //
     public static float speed = 4.0f;
     public static int[] getItemNum = new int[4]; //0:None 1:Speed 2:RapidFire 3:Weapon
+
+
     Vector3 moveDirection;
     Vector2 playerDirection;
     Quaternion defaultCameraDirection;
     Vector3 defaultCameraOffset;
+
+    //各種フラグ
     public static bool isRapidFire = false;
     public static bool isAbleMultiShot = false;
     bool isAbleShot = true;//弾が発射できるか(壁際で発射できないようにする)
-    int mainCnt = 0;
-    bool isClear = false;//クリア時のボイスを1回しか流さないようにする
-
-    //struct Jump//アニメーションとの差分解消のため
-    //{
-    //    public bool isStart;
-    //    //public bool isEnd;
-    //}
-
-    //Jump jump;
 
     public enum State
     {
-        Normal, Clear, Dead
+        Normal, Clear, AfterClear, Dead
     }
     public static State playerState;
     // Start is called before the first frame update
@@ -60,7 +63,7 @@ public class PlayerController : MonoBehaviour
         unityChan = transform.GetChild(0).gameObject;
         animator = unityChan.GetComponent<Animator>();
         aud = GetComponent<AudioSource>();
-        gameManager = GameObject.FindWithTag("Manager").GetComponent<GameManager>();
+        sePlayer = GameObject.FindWithTag("SEPlayer").GetComponent<SEPlayer>();
         playerState = State.Normal;
         defaultCameraDirection = Camera.main.transform.rotation;
         defaultCameraOffset = Camera.main.transform.position - transform.position;
@@ -77,30 +80,7 @@ public class PlayerController : MonoBehaviour
             //プレイヤの上下左右移動
             if (animator.GetBool("Run"))
             {
-                Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
-                if (inputVector.magnitude > 1.0f)
-                {
-                    inputVector = inputVector.normalized;
-                }
-                moveDirection.x = speed * inputVector.x;
-                moveDirection.z = speed * inputVector.z;
-
-                AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-
-                //走りモーションだけ、速度をアニメーションに反映
-                if (stateInfo.IsName("Run"))
-                {
-                    float dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
-                    SetAnimSpeed(dir / 5.0f);
-                    //Debug.Log(dir);
-                }
-                else
-                {
-                    SetAnimSpeed(1.0f);
-                }
-
-                float normalizedDir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
-                transform.rotation = Quaternion.Euler(0.0f, playerDirection.x + normalizedDir, 0.0f);
+                Run();
             }
             else
             {
@@ -108,90 +88,20 @@ public class PlayerController : MonoBehaviour
                 SetAnimSpeed(1.0f);
             }
 
-            //プレイヤの視点変更
-            playerDirection.x += Input.GetAxis("Horizontal_R");
-            //playerDirection.y -= Input.GetAxis("Vertical_R");
+            RotateCamera();
 
-            //カメラの上下を制限
-            //playerDirection.y = Mathf.Clamp(playerDirection.y, -10.0f, 45.0f);
+            //moveDirection.y -= gravity * Time.deltaTime;
 
-            //カメラを回転
-            Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraDirection;
-            Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraOffset;
-
-            //着地判定
-            //if (controller.isGrounded)
-            //{
-            //if (!jump.isStart)
-            //{
-            //    animator.SetBool("Jump", false);
-            //}
-
-            ////ジャンプ
-            //if (Input.GetButtonDown("Jump"))
-            //{
-            //    jump.isStart = true;
-            //    Invoke("SetJump", 0.4f);
-            //    animator.SetBool("Jump", true);
-            //}
-            //}
-            //else
-            //{
-                moveDirection.y -= gravity * Time.deltaTime;
-                //jump.isStart = false;
-            //}
             //弾発射
             if ((Input.GetButtonDown("Fire1") || RapidFireOperation()) && isAbleShot)
             {
-                int shotNum = 1;
-                if (isAbleMultiShot)
-                {
-                    shotNum = 3;
-                }
-                //距離
-                Vector3[] difference = {
-                    Vector3.zero,
-                    transform.right * -0.5f,
-                    transform.right * 0.5f
-                };
-
-                gameManager.aud.PlayOneShot(gameManager.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
-                //マルチショットが有効になっている場合、3つの弾を発射
-                for (int i = 0; i < shotNum; ++i)
-                {
-                    GameObject shot = Instantiate(shotPrefab);
-                    float vec;
-                    if(i == 2)
-                    {
-                        vec = i * 5f;
-                    }
-                    else
-                    {
-                        vec = -i * 5f;
-                    }
-                    Ray ray = new Ray(transform.position + transform.forward * 2.0f + transform.up * 0.5f,
-                        transform.forward * 8f + transform.right * vec);//真ん中よりやや上をめがけて発射
-                    Vector3 worldDirection = ray.direction;
-                    shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
-
-                    //移動した位置から弾発射
-                    shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f + difference[i];
-                }
+                ShootNormalShot();
             }
 
             //強力弾発射
             if (Input.GetButtonDown("Fire2") && getItemNum[3] != 0 && isAbleShot)
             {
-                aud.PlayOneShot(weapon);
-                --getItemNum[3];
-                GameObject shot = Instantiate(weaponPrefab);
-                Ray ray = new Ray(transform.position + transform.forward * 0.5f,
-                    transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
-                Vector3 worldDirection = ray.direction;
-                shot.GetComponent<ShotController>().Shoot(worldDirection.normalized * 1000.0f);
-
-                //移動した位置から弾発射
-                shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f;
+                ShootWeapon();
             }
         }
         else
@@ -201,23 +111,17 @@ public class PlayerController : MonoBehaviour
             {
                 SetAnimSpeed(1.0f);
                 animator.SetTrigger("Clear");
+
+                //プレイヤが正面を向くようにする
                 transform.rotation = Quaternion.Euler(0.0f, playerDirection.x + 180.0f, 0.0f);
-                if (!isClear)
-                {
-                    aud.PlayOneShot(clear);
-                    isClear = true;
-                }
+
+                aud.PlayOneShot(clear);
+                playerState = State.AfterClear;
             }
         }
 
-
-
         Vector3 globalDirection = Quaternion.Euler(0.0f, playerDirection.x, 0.0f) * moveDirection;
         controller.Move(globalDirection * Time.deltaTime);
-        //moveDirection = Vector3.zero;
-        //charaCon.Move(moveDirection * Time.deltaTime);
-
-        ++mainCnt;
     }
 
     void OnControllerColliderHit(ControllerColliderHit hit)
@@ -226,7 +130,7 @@ public class PlayerController : MonoBehaviour
         if (!hit.gameObject.tag.Contains("Item")) { return; }
 
         Destroy(hit.gameObject);
-        gameManager.aud.PlayOneShot(gameManager.itemGetSE);
+        sePlayer.aud.PlayOneShot(sePlayer.itemGetSE);
 
         switch (hit.gameObject.tag)
         {
@@ -275,7 +179,7 @@ public class PlayerController : MonoBehaviour
         animator.SetTrigger("Dead");
         playerState = State.Dead;
         GameManager.phase = GameManager.Phase.Dead;
-        gameManager.aud.PlayOneShot(gameManager.damageSE);
+        sePlayer.aud.PlayOneShot(sePlayer.damageSE);
         aud.PlayOneShot(dead);
         Invoke("AnimStop", 2.0f / speed * 4.0f);//加速アイテムに対応
     }
@@ -286,23 +190,119 @@ public class PlayerController : MonoBehaviour
     /// <returns>弾が発射できればtrue</returns>
     bool RapidFireOperation()
     {
-        return isRapidFire && Input.GetButton("Fire1") && mainCnt % 8 == 0;
+        return isRapidFire && Input.GetButton("Fire1") && Time.frameCount % 8 == 0;
     }
 
-    /// <summary>
-    /// ジャンプの処理
-    /// </summary>
-    //void SetJump()
-    //{
-    //    moveDirection.y = 6.0f;
-    //}
-
-    public void SetAnimSpeed(float n)
+    void SetAnimSpeed(float n)
     {
         animator.speed = n;
     }
     public void AnimStop()
     {
         animator.speed = 0.0f;
+    }
+
+    /// <summary>
+    /// 上下左右移動時の処理
+    /// </summary>
+    void Run()
+    {
+        Vector3 inputVector = new Vector3(Input.GetAxis("Horizontal"), 0.0f, Input.GetAxis("Vertical"));
+        //入力のベクトルの正規化
+        if (inputVector.magnitude > 1.0f)
+        {
+            inputVector = inputVector.normalized;
+        }
+        moveDirection.x = speed * inputVector.x;
+        moveDirection.z = speed * inputVector.z;
+
+        AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+
+        //走りモーションだけ、速度をアニメーションに反映
+        if (stateInfo.IsName("Run"))
+        {
+            float dir = Mathf.Pow(moveDirection.z * moveDirection.z + moveDirection.x * moveDirection.x, 0.5f);
+            SetAnimSpeed(dir / 5.0f);
+            //Debug.Log(dir);
+        }
+        else
+        {
+            SetAnimSpeed(1.0f);
+        }
+
+        float normalizedDir = Mathf.Atan2(moveDirection.x, moveDirection.z) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(0.0f, playerDirection.x + normalizedDir, 0.0f);
+    }
+
+    /// <summary>
+    /// カメラ回転処理
+    /// </summary>
+    void RotateCamera()
+    {
+        //プレイヤの視点変更
+        playerDirection.x += Input.GetAxis("Horizontal_R");
+
+        //カメラを回転
+        Camera.main.transform.rotation = Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraDirection;
+        Camera.main.transform.position = transform.position + Quaternion.Euler(playerDirection.y, playerDirection.x, 0.0f) * defaultCameraOffset;
+    }
+
+    /// <summary>
+    /// 通常の弾発射
+    /// </summary>
+    void ShootNormalShot()
+    {
+        int shotNum = 1;
+        if (isAbleMultiShot)
+        {
+            shotNum = 3;
+        }
+        //距離
+        Vector3[] difference = {
+                    Vector3.zero,
+                    transform.right * -0.5f,
+                    transform.right * 0.5f
+                };
+
+        sePlayer.aud.PlayOneShot(sePlayer.shootSE);//3つ発射しても1回しか鳴らさない(音量の都合)
+
+        //マルチショットが有効になっている場合、3つの弾を発射
+        for (int i = 0; i < shotNum; ++i)
+        {
+            GameObject shot = Instantiate(shotPrefab);
+            float vec;
+            if (i == 2)
+            {
+                vec = i * 5f;
+            }
+            else
+            {
+                vec = -i * 5f;
+            }
+            Ray ray = new Ray(transform.position + transform.forward * 2.0f + transform.up * 0.5f,
+                transform.forward * 8f + transform.right * vec);//真ん中よりやや上をめがけて発射
+            Vector3 worldDirection = ray.direction;
+            shot.GetComponent<ShotController>().Shoot(worldDirection * 800.0f);
+
+            //移動した位置から弾発射
+            shot.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f + difference[i];
+        }
+    }
+
+    /// <summary>
+    /// 爆弾発射
+    /// </summary>
+    void ShootWeapon()
+    {
+        aud.PlayOneShot(this.weapon);
+        --getItemNum[3];
+        GameObject weapon = Instantiate(weaponPrefab);
+        Ray ray = new Ray(transform.position + transform.forward * 0.5f,
+            transform.forward + transform.up * 0.15f);//真ん中よりやや上をめがけて発射
+        Vector3 worldDirection = ray.direction;
+        weapon.GetComponent<WeaponController>().Shoot(worldDirection.normalized * 1000.0f);
+
+        //移動した位置から弾発射
+        weapon.transform.position = transform.position + transform.forward * 2.0f + transform.up * 0.5f;
     }
 }
