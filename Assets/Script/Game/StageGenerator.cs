@@ -248,7 +248,7 @@ public class StageGenerator : MonoBehaviour
                 };
                 enemyData = new List<Vector3>
                 {
-                    new Vector3( 10.0f ,1.0f, 10.0f),
+                    new Vector3( 10.0f ,0.3f, 10.0f),
                };
                 break;
 

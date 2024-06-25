@@ -20,7 +20,7 @@ public class GameManager : MonoBehaviour
     [SerializeField] int maxStage;
     [SerializeField] Image fade;
 
-    public static int stage = 1;
+    public static int stage = 1;//ステージ1からスタート
     public static int score = 0;
     public static int preScore = 0;//コース開始時のスコア
     public static Phase phase;//ゲームの段階
