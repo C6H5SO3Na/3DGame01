@@ -11,7 +11,6 @@ public class EnemyController : MonoBehaviour
     [SerializeField] ParticleSystem explosion;
     [SerializeField] int life;
     CharacterController controller;
-    Animator animator;
     Vector3 moveVec;
     // Start is called before the first frame update
     void Start()
@@ -19,7 +18,6 @@ public class EnemyController : MonoBehaviour
         player = GameObject.FindWithTag("Player");
         sePlayer = GameObject.FindWithTag("SEPlayer").GetComponent<SEPlayer>();
         controller = GetComponent<CharacterController>();
-        animator = transform.GetChild(0).gameObject.GetComponent<Animator>();//ÉÇÉfÉãÇ…ïçëÆ
     }
 
     // Update is called once per frame
@@ -29,10 +27,8 @@ public class EnemyController : MonoBehaviour
         if (GameManager.phase != GameManager.Phase.Game)
         {
             moveVec = Vector3.zero;
-            animator.speed *= 0.99f;
             return;
         }
-        animator.speed = 1.0f;
         Vector3 direction = player.transform.position - this.transform.position;
         moveVec = direction.normalized * Time.deltaTime;//ÉvÉåÉCÉÑÇí«ê’
 
