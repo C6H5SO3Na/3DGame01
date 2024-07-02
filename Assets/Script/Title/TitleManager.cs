@@ -25,6 +25,8 @@ public class TitleManager : MonoBehaviour
         GameManager.preScore = 0;//コース開始時のスコア
         BGMPlayer.isCreated = false;
 
+        Application.targetFrameRate = 60;
+
         PlayerController.isRapidFire = false;
         PlayerController.isAbleMultiShot = false;
         PlayerController.speed = 4.0f;

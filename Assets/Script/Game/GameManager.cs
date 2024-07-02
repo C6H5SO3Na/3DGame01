@@ -30,7 +30,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Application.targetFrameRate = 60;
         //ステージ1、すなわちゲーム開始時にBGMを再生
         if (stage == 1)
         {
